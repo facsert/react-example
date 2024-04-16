@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import { Separator } from "@/components/ui/separator"
+import { BreadCrumb } from "@/components/BreadCrumb";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +15,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className="dark">
+      <body className="flex flex-col h-dvh">
+        <header className="w-full h-10">
+          Menu
+        </header>
+        <Separator />
+        <main className="flex flex-row h-lvh">
+          <div className="w-[240px]">
+             Sidebar
+          </div>
+          <Separator orientation="vertical"/>
+          <div className="flex flex-col">
+            <div className="w-full m-2">
+              <BreadCrumb />
+            </div>
+            <div className="w-full h-full">
+              {children}
+            </div>
+          </div>
+        </main>
+        <Separator />
+        <footer className="w-full h-10">
+          footer
+        </footer>
+      </body>
     </html>
   );
 }
