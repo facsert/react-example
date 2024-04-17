@@ -1,7 +1,10 @@
+// "use client"
 import "./globals.css";
 import type { Metadata } from "next";
 import { Separator } from "@/components/ui/separator"
-import { BreadCrumb } from "@/components/BreadCrumb";
+import BreadCrumb from "@/components/BreadCrumb";
+import Sidebar from "@/components/Sidebar";
+import { useState } from "react";
 
 
 export const metadata: Metadata = {
@@ -14,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const [pageName, setPageName] = useState('Home')
   return (
     <html lang="en" className="dark">
       <body className="flex flex-col h-dvh">
@@ -23,14 +27,14 @@ export default function RootLayout({
         <Separator />
         <main className="flex flex-row h-lvh">
           <div className="w-[240px]">
-             Sidebar
+            <Sidebar />
           </div>
           <Separator orientation="vertical"/>
           <div className="flex flex-col">
             <div className="w-full m-2">
               <BreadCrumb />
             </div>
-            <div className="w-full h-full">
+            <div className="w-full h-full p-4">
               {children}
             </div>
           </div>

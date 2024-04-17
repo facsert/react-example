@@ -9,25 +9,27 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-export function BreadCrumb() {
+export default function BreadCrumb() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink>
-            <Link href="/">Home</Link>
+          <BreadcrumbLink href="/">
+          Home
+            {/* <Link href="/">Home</Link> */}
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink>
-            <Link href="/about">About</Link>
+          <BreadcrumbLink href="/about">
+            About
+            {/* <Link href="/components">Components</Link> */}
           </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
+        {/* <BreadcrumbSeparator /> */}
+        {/* <BreadcrumbItem>
           <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-        </BreadcrumbItem>
+        </BreadcrumbItem> */}
       </BreadcrumbList>
     </Breadcrumb>
   )
