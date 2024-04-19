@@ -1,5 +1,18 @@
+"use client"
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { 
+    AlertDialog, 
+    AlertDialogTrigger, 
+    AlertDialogContent, 
+    AlertDialogHeader, 
+    AlertDialogTitle, 
+    AlertDialogDescription, 
+    AlertDialogFooter,  
+    AlertDialogAction, 
+    AlertDialogCancel 
+} from "@/components/ui/alert-dialog";
 
 const buttons = [
     {
@@ -28,22 +41,30 @@ const buttons = [
     }
 ]
 export default function ButtonPage() {
+    // const [count, setCount] = useState(0);
     return (
        <>
            <div className="w-full h-full grid grid-cols-3 grid-rows-2 gap-5">
                {buttons.map((button) => {
                    return (
-                    <Card key={button.name} className="flex flex-row justify-center items-center">
-                        <Button variant={button.variant}>{button.name}</Button>
+                    <Card key={button.name} className="flex flex-row justify-center items-center hover:bg-accent">
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant={button.variant} >{button.name}</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>{button.name} button Clicked</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </Card>
-               )
+                   )
                })}
-               {/* <Button variant="default">Default</Button>
-               <Button variant="destructive">destructive</Button>
-               <Button variant="outline">outline</Button>
-               <Button variant="secondary">secondary</Button>
-               <Button variant="ghost">ghost</Button>
-               <Button variant="link">link</Button> */}
            </div>
        </>
     );

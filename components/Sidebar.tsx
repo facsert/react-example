@@ -9,7 +9,7 @@ import {
     UserRound, 
     Command,
     CreditCard,
-    Layers
+    AlignJustify
 } from "lucide-react";
  
 
@@ -23,6 +23,11 @@ const pages = [
         name: 'Button',
         href: '/button',
         icon: <Command className="mr-2 h-4 w-4" />,
+    },
+    {
+        name: 'Menu',
+        href: '/menu',
+        icon: <AlignJustify className="mr-2 h-4 w-4" />,
     },
     {
         name: 'Card',

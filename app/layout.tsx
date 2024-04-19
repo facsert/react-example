@@ -18,7 +18,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState<Boolean | undefined>(true);
   return (
     <html lang="en" className={dark? "dark": "light"}>
       <body className="flex flex-col h-dvh">
