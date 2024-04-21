@@ -37,27 +37,22 @@ export default function MenuPage() {
     return (
        <div className="flex flex-col justify-center items-center">
             <Command className="w-full rounded-lg border shadow-md">
-            {/* <CommandDialog open={true} onOpenChange={() => {}}> */}
                 <CommandInput placeholder="Type a command or search..."  defaultValue={value}/>
-                
                     <CommandEmpty>
                         No results found.
                     </CommandEmpty>
-                    <CommandList>
+                <CommandList>
                     <CommandGroup heading="General">
                         {menus.map((menu) => {
                             return (
-                                // <div key={menu.value} className="hover:bg-accent">
                                 <CommandItem disabled={false} key={menu.value} value={menu.value} onSelect={(currentValue) => setValue(currentValue)}>
                                     {menu.value}
                                 </CommandItem>
-                                // </div>
                             );
                         })}
                     </CommandGroup>
                 </CommandList>
             </Command>
-            <Button>{value}</Button>
        </div>
     );
 }

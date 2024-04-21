@@ -14,7 +14,7 @@ import {
     AlertDialogCancel 
 } from "@/components/ui/alert-dialog";
 
-const buttons = [
+const buttons: {name: string, variant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"}[] = [
     {
         name: "Default",
         variant: "default",

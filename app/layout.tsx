@@ -5,7 +5,8 @@ import { Separator } from "@/components/ui/separator"
 import BreadCrumb from "@/components/BreadCrumb";
 import Sidebar from "@/components/Sidebar";
 import Menu from "@/components/Menu";
-import { useState } from "react";
+// import { useState } from "react";
+import useTheme from "@/hook/theme"
 
 
 // export const metadata: Metadata = {
@@ -18,12 +19,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [dark, setDark] = useState<Boolean | undefined>(true);
+  // const [dark, setDark]: [boolean, (value: boolean) => void] = useState<boolean>(true);
+  const darkTheme = useTheme(state => state.dark);
   return (
-    <html lang="en" className={dark? "dark": "light"}>
+    <html lang="en" className={darkTheme? "dark": "light"}>
       <body className="flex flex-col h-dvh">
         <header className="w-full h-12">
-          <Menu dark={dark} setDark={setDark} />
+          <Menu />
         </header>
         <Separator />
         <main className="flex flex-row h-lvh">
