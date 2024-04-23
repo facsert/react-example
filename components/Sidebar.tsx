@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
+import { Separator } from "@/components/ui/separator"
 
 import {
     Accordion,
@@ -20,7 +21,7 @@ import {
     CreditCard,
     AlignJustify,
     ListCollapse,
-    StretchHorizontal,
+    Table2,
 } from "lucide-react";
 
 
@@ -39,14 +40,19 @@ const homePages: {name: string, href: string, icon: React.ReactNode}[] = [
 
 const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
     {
+        name: 'Accordion',
+        href: '/accordion',
+        icon: <ListCollapse className="mr-2 h-4 w-4"/>,
+    },
+    {
         name: 'Button',
         href: '/button',
         icon: <Command className="mr-2 h-4 w-4" />,
     },
     {
-        name: 'Accordion',
-        href: '/accordion',
-        icon: <ListCollapse className="mr-2 h-4 w-4"/>,
+        name: 'Card',
+        href: '/card',
+        icon: <CreditCard className="mr-2 h-4 w-4" />,
     },
     {
         name: 'Menu',
@@ -54,9 +60,9 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
         icon: <AlignJustify className="mr-2 h-4 w-4" />,
     },
     {
-        name: 'Card',
-        href: '/card',
-        icon: <CreditCard className="mr-2 h-4 w-4" />,
+        name: 'Table',
+        href: '/table',
+        icon: <Table2 className="mr-2 h-4 w-4" />,
     },
 ];
 
@@ -71,10 +77,11 @@ export default function Sidebar() {
                 Discover
             </h2>
           </div>
+          <Separator />
           <div className="space-y-0">
           <Accordion type="multiple" className="w-[240px] h-full">
-                <AccordionItem value="Group-1">
-                <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Home</p></AccordionTrigger>
+                <AccordionItem value="Group-1" className='py-0 my-0'>
+                    <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Home</p></AccordionTrigger>
                     {homePages.map((page) => {
                         return (
                             <AccordionContent key={page.name} className="p-0">
@@ -91,8 +98,8 @@ export default function Sidebar() {
                     })}
                 </AccordionItem>
                 <AccordionItem value="Group-2">
-                <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Components</p></AccordionTrigger>
-                {componentsPages.map((page) => {
+                    <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Components</p></AccordionTrigger>
+                    {componentsPages.map((page) => {
                         return (
                             <AccordionContent key={page.name} className="p-0">
                                 <Button 

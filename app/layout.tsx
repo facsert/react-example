@@ -23,23 +23,20 @@ export default function RootLayout({
   const darkTheme = useTheme(state => state.dark);
   return (
     <html lang="en" className={darkTheme? "dark": "light"}>
-      <body className="flex flex-col h-dvh">
+      <body className="flex flex-col w-screen h-screen">
         <header className="w-full h-12">
           <Menu />
         </header>
         <Separator />
-        <main className="flex flex-row h-lvh">
+        <main className="flex flex-row h-full">
           <div className="w-[240px]">
             <Sidebar />
           </div>
           <Separator orientation="vertical"/>
-          <div className="flex flex-col h-full w-full">
-            <div className="w-full m-2">
-              <BreadCrumb />
-            </div>
-            <div className="w-full h-full p-4">
-              {children}
-            </div>
+          <div className="h-full w-full">
+            {/* <div className="w-full h-full"> */}
+               {children}
+            {/* </div>  */}
           </div>
         </main>
         <Separator />
