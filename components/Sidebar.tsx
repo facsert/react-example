@@ -1,29 +1,27 @@
-"use client"
-
+// "use client"
 import { useRouter } from 'next/navigation';
-import { Separator } from "@/components/ui/separator"
-
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+    Command,
+    CommandDialog,
+    CommandInput,
+    CommandEmpty,
+    CommandList,
+    CommandGroup,
+    CommandItem,
+    CommandSeparator,
+} from "@/components/ui/command";
 
-import {
-    Button
-} from "@/components/ui/button"
+
 
 import { 
     Home, 
     UserRound, 
-    Command,
+    Command as CommandIcon,
     CreditCard,
     AlignJustify,
     ListCollapse,
     Table2,
 } from "lucide-react";
-
 
 const homePages: {name: string, href: string, icon: React.ReactNode}[] = [
     {
@@ -47,7 +45,7 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
     {
         name: 'Button',
         href: '/button',
-        icon: <Command className="mr-2 h-4 w-4" />,
+        icon: <CommandIcon className="mr-2 h-4 w-4" />,
     },
     {
         name: 'Card',
@@ -66,73 +64,35 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
     },
 ];
 
-const settingPages:{name: string, href: string, icon: React.ReactNode}[] = [];
-
 export default function Sidebar() {
     const router = useRouter();
     return (
-        <div className="flex flex-col  py-4">
-          <div className="px-3 py-2">
-            <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                Discover
-            </h2>
-          </div>
-          <Separator />
-          <div className="space-y-0">
-          <Accordion type="multiple" className="w-[240px] h-full">
-                <AccordionItem value="Group-1" className='py-0 my-0'>
-                    <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Home</p></AccordionTrigger>
-                    {homePages.map((page) => {
+        <Command className='w-full w-full'>
+            <CommandInput placeholder="Type a command or search..." />
+            <CommandList>
+                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandGroup heading="Index">
+                {homePages.map((page) => {
                         return (
-                            <AccordionContent key={page.name} className="p-0">
-                                <Button 
-                                  variant='ghost'
-                                  key={page.name}
-                                  className="w-full pl-20 justify-start"
-                                  onClick={() => router.push(page.href)}
-                                >
-                                    {page.icon} {page.name}
-                                </Button>
-                            </AccordionContent>
-                        )
+                            <CommandItem className='pl-8' key={page.name} onSelect={() => router.push(page.href)}>
+                                {page.icon}
+                                <span>{page.name}</span>
+                            </CommandItem>
+                        );
                     })}
-                </AccordionItem>
-                <AccordionItem value="Group-2">
-                    <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Components</p></AccordionTrigger>
+                </CommandGroup>
+                <CommandSeparator />
+                <CommandGroup heading="Components">
                     {componentsPages.map((page) => {
                         return (
-                            <AccordionContent key={page.name} className="p-0">
-                                <Button 
-                                  variant='ghost'
-                                  key={page.name}
-                                  className="w-full pl-20 justify-start"
-                                  onClick={() => router.push(page.href)}
-                                >
-                                    {page.icon} {page.name}
-                                </Button>
-                            </AccordionContent>
-                        )
+                            <CommandItem className='pl-8' key={page.name} onSelect={() => router.push(page.href)}>
+                                {page.icon}
+                                <span>{page.name}</span>
+                            </CommandItem>
+                        );
                     })}
-                </AccordionItem>
-                <AccordionItem value="Group-3">
-                    <AccordionTrigger className='w-full'><p className="w-full pl-5 text-start">Setting</p></AccordionTrigger>
-                    {settingPages.map((page) => {
-                        return (
-                            <AccordionContent key={page.name} className="p-0">
-                                <Button 
-                                  variant='ghost'
-                                  key={page.name}
-                                  className="w-full pl-20 justify-start"
-                                  onClick={() => router.push(page.href)}
-                                >
-                                    {page.icon} {page.name}
-                                </Button>
-                            </AccordionContent>
-                        )
-                    })}
-                </AccordionItem>
-            </Accordion>
-          </div>
-        </div>
+                </CommandGroup>
+            </CommandList>
+        </Command>
     );
-};
+}

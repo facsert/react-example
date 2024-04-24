@@ -45,7 +45,7 @@ export default function MenuPage() {
                     <CommandGroup heading="General">
                         {menus.map((menu) => {
                             return (
-                                <CommandItem disabled={false} key={menu.value} value={menu.value} onSelect={(currentValue) => setValue(currentValue)}>
+                                <CommandItem className="my-1" disabled={false} key={menu.value} value={menu.value} onSelect={(currentValue) => setValue(currentValue)}>
                                     {menu.value}
                                 </CommandItem>
                             );
