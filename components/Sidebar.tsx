@@ -21,18 +21,32 @@ import {
     AlignJustify,
     ListCollapse,
     Table2,
+    CircleGauge,
+    SquareGanttChart,
+    Pencil,
+    Grid2X2,
 } from "lucide-react";
 
 const homePages: {name: string, href: string, icon: React.ReactNode}[] = [
     {
-        name: 'Home',
-        href: '/',
-        icon: <Home className="mr-2 h-4 w-4" />,
+        name: 'Dashboard',
+        href: '/dashboard',
+        icon: <CircleGauge className="mr-2 h-4 w-4" />,
     },
     {
-        name: 'About',
-        href: '/about',
-        icon: <UserRound className="mr-2 h-4 w-4" />,
+        name: 'Flow',
+        href: '/flow',
+        icon: <SquareGanttChart className="mr-2 h-4 w-4" />,
+    },
+    {
+        name: 'Forms',
+        href: '/forms',
+        icon: <Pencil className="mr-2 h-4 w-4" />,
+    },
+    {
+        name: 'Tasks',
+        href: '/tasks',
+        icon: <Grid2X2 className="mr-2 h-4 w-4" />,
     },
 ]
 
@@ -67,14 +81,14 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
 export default function Sidebar() {
     const router = useRouter();
     return (
-        <Command className='w-full w-full'>
-            <CommandInput placeholder="Type a command or search..." />
+        <Command className='w-full h-full'>
+            <CommandInput placeholder="search..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Index">
+                <CommandGroup heading="Layout">
                 {homePages.map((page) => {
                         return (
-                            <CommandItem className='pl-8' key={page.name} onSelect={() => router.push(page.href)}>
+                            <CommandItem className='pl-8 mb-1' key={page.name} onSelect={() => router.push(page.href)}>
                                 {page.icon}
                                 <span>{page.name}</span>
                             </CommandItem>
@@ -85,7 +99,7 @@ export default function Sidebar() {
                 <CommandGroup heading="Components">
                     {componentsPages.map((page) => {
                         return (
-                            <CommandItem className='pl-8' key={page.name} onSelect={() => router.push(page.href)}>
+                            <CommandItem className='pl-8 mb-1' key={page.name} onSelect={() => router.push(page.href)}>
                                 {page.icon}
                                 <span>{page.name}</span>
                             </CommandItem>

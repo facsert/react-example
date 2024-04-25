@@ -47,7 +47,9 @@ export default function ButtonPage() {
            <div className="w-full h-full grid grid-cols-3 grid-rows-2 gap-5">
                {buttons.map((button) => {
                    return (
-                    <Card key={button.name} className="flex flex-row justify-center items-center hover:bg-accent">
+                    <Card key={button.name} 
+                        className="flex flex-row justify-center items-center hover:bg-accent"
+                    >
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant={button.variant} >{button.name}</Button>
