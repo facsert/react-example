@@ -13,7 +13,8 @@ import { getStudents, Student } from "@/hook/student";
 
 
 export default async function TablePage() {
-    const data:Student[] = await getStudents();
+    // const data:Student[] = await getStudents();
+    const data:Student[] = [];
     return (
        <div className="flex flex-col justify-start items-center h-full w-full">
             <div className="w-full h-[40px] text-center">
