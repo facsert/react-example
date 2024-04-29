@@ -12,7 +12,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getStudents, Student } from "@/hook/student";
 
 
-
 export default async function TablePage() {
     const data:Student[] = await getStudents();
     return (
@@ -26,8 +25,7 @@ export default async function TablePage() {
                     <TableRow>
                         <TableHead>Id</TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Age</TableHead>
-                        <TableHead>Locked</TableHead>
+                        <TableHead>Email</TableHead>
                         <TableHead>Create_at</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -57,10 +55,7 @@ function List(data: Student[]) {
                 <TableRow key={row.name}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.age}</TableCell>
-                <TableCell className={row.locked ? "text-green-500" : "text-red-500"}>
-                    {row.locked ? "TRUE" : "FALSE"}
-                </TableCell>
+                <TableCell>{row.email}</TableCell>
                 <TableCell>{row.create_at}</TableCell>
             </TableRow>
         )
