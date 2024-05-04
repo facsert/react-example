@@ -25,7 +25,7 @@ const getArticles: () => Promise<Article[]> = async () => {
 
 const getArticleById: (id: number) => Promise<Article> = async (id: number) => {   
     try {
-        const response = await fetch(`${url}/api/v1/article/${id}`);
+        const response = await fetch(`${url}/api/v1/articles/${id}`);
         return response.json();
     } catch (error) {
         console.log(error);

@@ -54,11 +54,11 @@ function List(data: Student[]) {
     data.map((row) => {
             lines.push(
                 <TableRow key={row.name}>
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>{row.create_at}</TableCell>
-            </TableRow>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{row.email}</TableCell>
+                    <TableCell>{row.create_at}</TableCell>
+                </TableRow>
         )
     });
     return lines;

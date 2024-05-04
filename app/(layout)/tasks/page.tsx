@@ -1,7 +1,18 @@
-export default function TasksPage() {
-    return (
-       <>
-           <h1>Tasks Page</h1>
-       </>
-    );
+import React from 'react'
+import PeopleDataTable from './table'
+import { people } from './people'
+import { columns } from './columns'
+
+type Props = {}
+
+const People = (props: Props) => {
+  return (
+    <div className='container py-0 mx-auto'>
+      <PeopleDataTable columns={columns} data={people}/>
+    </div>
+  )
 }
+
+export default People
+
+
