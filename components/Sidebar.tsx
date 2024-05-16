@@ -76,6 +76,11 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
         href: '/table',
         icon: <Table2 className="mr-2 h-4 w-4" />,
     },
+    {
+        name: 'Upload',
+        href: '/upload',
+        icon: <Table2 className="mr-2 h-4 w-4" />,
+    },
 ];
 
 export default function Sidebar() {
