@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useState, FormEvent } from "react"
+import { toast } from 'sonner';
 
 export default function UploadPage() {
     const [file, setFile] = useState<File>();
@@ -14,33 +15,50 @@ export default function UploadPage() {
 
     async function handleUpload(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            console.log("upload file", file);            
-            formData.append("rules", `${blacklist? "blacklist": ""},${timeout? "timeout": ""},${panic? "panic": ""}`)
-            
-            try {
-                const response = await fetch("http://localhost:8050/api/v1/scan/file", {
-                    method: "POST",
-                    body: formData,
-                });
-                if (response.ok) {
-                    console.log("upload success");
-                    console.log("upload response", await response.json());
-                } else {
-                    console.log("upload failed");
-                }
-            } catch (error) {
-                console.log("upload error", error);
-            }
+        if (!file) {
+            toast.error( "please add file", 
+                {action: { label: "ok", onClick: () => {}} 
+            })
+            return
+        }
+        const formData = new FormData();
+        formData.append("file", file);
+        console.log("upload file", file);            
+        formData.append("rules", `${blacklist? "blacklist": ""},${timeout? "timeout": ""},${panic? "panic": ""}`)
+        
+        try {
+            const response = await fetch("http://localhost:8050/api/v1/scan/file", {
+                method: "POST",
+                body: formData,
+            });
+            if (response.ok) {
+                console.log("upload success");
+               
+                // 下载 response steam file
+                // const blob = await response.blob();
+                // console.log(response.headers.get("Content-Disposition"))
+                // const filename = response.headers.get("Content-Disposition")?? "filename=example.zip";
+                // const element = document.createElement('a');
+                // element.href = window.URL.createObjectURL(blob);
+                // element.download =  filename.split("filename=")[1]
+                // document.body.appendChild(element);
+                // element.click();
+                // document.body.removeChild(element);
+                // window.URL.revokeObjectURL(window.URL.createObjectURL(blob));
+                // console.log('upload success');
 
+            } else {
+                console.log("upload failed");
+            }
+        } catch (error) {
+            console.log("upload error", error);
         }
     }
 
     return (
         <div className="border">
             <form onSubmit={handleUpload}>
+
                 <div>
                     <Checkbox id="blacklist" checked={blacklist} onCheckedChange={(checked) => setBlacklist(checked? true : false)} />
                     <Label htmlFor="blacklist">blacklist</Label>
