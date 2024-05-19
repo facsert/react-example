@@ -1,19 +1,38 @@
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useState, FormEvent } from "react"
 import { toast } from 'sonner';
 
+interface Rule {
+    id: number
+    name: string
+    checked: boolean
+}
+
+interface Link {
+    isLoading: boolean
+    url: string
+    filename: string
+}
+
 export default function UploadPage() {
     const [file, setFile] = useState<File>();
-    const [blacklist, setBlacklist] = useState(false);
-    const [timeout, setTimeout] = useState(false);
-    const [panic, setPanic] = useState(false);
-
-    async function handleUpload(event: FormEvent<HTMLFormElement>) {
+    const [link, setLink] = useState<Link>({
+        isLoading: false,
+        url: "",
+        filename: ""
+    });
+    const [rules, setRules] = useState<Rule[]>([
+        { id: 1, name: "blacklist", checked: false },
+        { id: 2, name: "timeout", checked: false },
+        { id: 3, name: "panic", checked: false },
+    ]);
+  
+    const formData = new FormData();
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (!file) {
             toast.error( "please add file", 
@@ -21,10 +40,10 @@ export default function UploadPage() {
             })
             return
         }
-        const formData = new FormData();
+        
+        setLink({...link, isLoading: true})
         formData.append("file", file);
-        console.log("upload file", file);            
-        formData.append("rules", `${blacklist? "blacklist": ""},${timeout? "timeout": ""},${panic? "panic": ""}`)
+        // formData.append("rules", `${blacklist? "blacklist": ""},${timeout? "timeout": ""},${panic? "panic": ""}`)
         
         try {
             const response = await fetch("http://localhost:8050/api/v1/scan/file", {
@@ -32,21 +51,13 @@ export default function UploadPage() {
                 body: formData,
             });
             if (response.ok) {
+                const blob = await response.blob();
+                setLink({
+                    isLoading: false,
+                    url: window.URL.createObjectURL(blob),
+                    filename: response.headers.get("Content-Disposition")?? "filename=example.zip"
+                });
                 console.log("upload success");
-               
-                // 下载 response steam file
-                // const blob = await response.blob();
-                // console.log(response.headers.get("Content-Disposition"))
-                // const filename = response.headers.get("Content-Disposition")?? "filename=example.zip";
-                // const element = document.createElement('a');
-                // element.href = window.URL.createObjectURL(blob);
-                // element.download =  filename.split("filename=")[1]
-                // document.body.appendChild(element);
-                // element.click();
-                // document.body.removeChild(element);
-                // window.URL.revokeObjectURL(window.URL.createObjectURL(blob));
-                // console.log('upload success');
-
             } else {
                 console.log("upload failed");
             }
@@ -55,41 +66,50 @@ export default function UploadPage() {
         }
     }
 
+    function Download() {
+        if (!link.url) {
+            toast.error( "no response", 
+                {action: { label: "ok", onClick: () => {}} 
+            })
+            return
+        }
+        const element = document.createElement('a');
+        element.href = link.url;
+        element.download = link.filename
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        window.URL.revokeObjectURL(link.url);
+
+        setLink({...link, url: ""})
+        console.log('upload success');
+    }
+
     return (
-        <div className="border">
-            <form onSubmit={handleUpload}>
-
-                <div>
-                    <Checkbox id="blacklist" checked={blacklist} onCheckedChange={(checked) => setBlacklist(checked? true : false)} />
-                    <Label htmlFor="blacklist">blacklist</Label>
-                    <Checkbox id="timeout" checked={timeout} onCheckedChange={(checked) => setTimeout(checked? true : false)} />
-                    <Label htmlFor="timeout">timeout</Label>
-                    <Checkbox id="panic" checked={panic} onCheckedChange={(checked) => setPanic(checked? true : false)} />
-                    <Label htmlFor="panic">panic</Label>
-
+        <div>
+            <form onSubmit={handleSubmit}>
+                <div className="flex flex-col w-full h-[300px] z-0 border rounded-md">
+                    <Label htmlFor="uploadFile" className="flex flex-col justify-end items-center w-full h-[300px] z-10"><p>{file?.name?? "upload File"}</p></Label>
+                    <Input className="w-full h-[300px] z-30 opacity-0" id="uploadFile" type="file" onChange={(e) => setFile(e.target.files?.[0])}/>
                 </div>
-                <div>
-                    <Label htmlFor="uploadFile">Upload</Label>
-                    <Input id="uploadFile" type="file" onChange={(e) => setFile(e.target.files?.[0])}/>
+                <div className="flex flex-row mt-4 gap-4">
+                {rules.map((rule, index) => {
+                    return (
+                        <div key={index}>
+                            <Checkbox className="mr-1" id={rule.name} checked={rule.checked}  onCheckedChange={(checked: boolean) => { setRules(rules.map((r, i) => {
+                                return i === index? {id: r.id, checked: checked? true : false, name: r.name} : r
+                            }))}} />
+                            <Label htmlFor={rule.name}>{rule.name}</Label>
+                        </div>
+                    )
+                })}
                 </div>
-                <Button type="submit">Submit</Button>
+                <div className="flex flex-col my-4">
+                    <Button type="submit">Submit</Button>
+                </div>
             </form>
+            <Button className="w-full" onClick={Download} >Download</Button>
         </div>
     )
 }
-
-
-// {rules.map((rule, index) => {
-//     return (
-//         <div key={index}>
-//             <Checkbox id={rule.name}  onCheckedChange={(checked) => { setRules(rules.map((r, i) => {
-//                 if (i === index) {
-//                     return {checked: checked? true : false, name: r.name}
-//                 }
-//                 return r
-//             })) }} checked={rule.checked}/>
-//             <Label>{rule.name}</Label>
-//         </div>
-//     )
-// })}
 

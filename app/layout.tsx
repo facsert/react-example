@@ -3,6 +3,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Menu from "@/components/Menu";
 import useTheme from "@/hook/theme"
+import { Toaster } from "@/components/ui/sonner"
 
 import { Separator } from "@/components/ui/separator";
 
@@ -21,7 +22,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </div>
           <Separator orientation="vertical" />
           <div className="h-[88vh] w-full p-4">
-            {children} 
+            {children}
+            <Toaster position="top-center" />
           </div>
         </div>
         <Separator />
