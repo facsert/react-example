@@ -18,6 +18,10 @@ interface Link {
     filename: string
 }
 
+// { id: 1, name: "blacklist", checked: false },
+// { id: 2, name: "timeout", checked: false },
+// { id: 3, name: "panic", checked: false },
+
 export default function UploadPage() {
     const [file, setFile] = useState<File>();
     const [link, setLink] = useState<Link>({
@@ -25,11 +29,7 @@ export default function UploadPage() {
         url: "",
         filename: ""
     });
-    const [rules, setRules] = useState<Rule[]>([
-        { id: 1, name: "blacklist", checked: false },
-        { id: 2, name: "timeout", checked: false },
-        { id: 3, name: "panic", checked: false },
-    ]);
+    const [rules, setRules] = useState<Rule[]>([]);
   
     const formData = new FormData();
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -88,9 +88,9 @@ export default function UploadPage() {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <div className="flex flex-col w-full h-[300px] z-0 border rounded-md">
-                    <Label htmlFor="uploadFile" className="flex flex-col justify-end items-center w-full h-[300px] z-10"><p>{file?.name?? "upload File"}</p></Label>
-                    <Input className="w-full h-[300px] z-30 opacity-0" id="uploadFile" type="file" onChange={(e) => setFile(e.target.files?.[0])}/>
+                <div className="flex flex-col w-full h-[300px] z-0 border rounded-md hover:bg-accent ">
+                    <Label htmlFor="uploadFile" className="flex flex-col justify-end items-center w-full h-[300px] z-10 cursor-pointer"><p>{file?.name?? "upload File"}</p></Label>
+                    <Input className="w-full h-[300px] z-30 opacity-0 cursor-pointer" id="uploadFile" type="file" onChange={(e) => setFile(e.target.files?.[0])}/>
                 </div>
                 <div className="flex flex-row mt-4 gap-4">
                 {rules.map((rule, index) => {
@@ -104,11 +104,14 @@ export default function UploadPage() {
                     )
                 })}
                 </div>
-                <div className="flex flex-col my-4">
+                <div className="flex flex-row h-[20vh] border">
+                    
+                </div>
+                <div className="flex flex-col gap-4 my-4">
                     <Button type="submit">Submit</Button>
+                    <Button className="w-full" type="button" onClick={Download} >Download</Button>
                 </div>
             </form>
-            <Button className="w-full" onClick={Download} >Download</Button>
         </div>
     )
 }

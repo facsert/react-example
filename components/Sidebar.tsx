@@ -57,6 +57,11 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
         icon: <ListCollapse className="mr-2 h-4 w-4"/>,
     },
     {
+        name: 'Form',
+        href: '/form',
+        icon: <Pencil className="mr-2 h-4 w-4" />,
+    },
+    {
         name: 'Button',
         href: '/button',
         icon: <CommandIcon className="mr-2 h-4 w-4" />,
