@@ -16,7 +16,7 @@ export default function Item()
   return (
     <Dialog>
          <DialogTrigger>
-            <Button>Add Item</Button>
+            <div>Add Item</div>
          </DialogTrigger>
          <DialogContent>
             <form action=""></form>

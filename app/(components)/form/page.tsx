@@ -28,6 +28,13 @@ export default function FormPage() {
         setClient({...client, [id]: value})
         console.log(client)
     }
+
+    function testAction(formData: FormData) {
+        console.log("TEST ACTION");
+        console.log(formData.get("host"));
+        console.log(formData.get("username"));
+        toast.success("Success");
+    }
     return (
         <form onSubmit={handleSubmit}>
             <Label htmlFor="host">host</Label>
@@ -43,6 +50,7 @@ export default function FormPage() {
             <Input type="text" id="password" value={client.password} onChange={handleChange} />
 
             <Button type="submit">Submit</Button>
+            <Button formAction={testAction}>Button</Button>
         </form>
     );
 }
