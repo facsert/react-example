@@ -29,10 +29,10 @@ export default function FormPage() {
         console.log(client)
     }
 
-    function testAction(formData: FormData) {
+    function testAction() {
         console.log("TEST ACTION");
-        console.log(formData.get("host"));
-        console.log(formData.get("username"));
+        console.log(client.host);
+        console.log(client.username);
         toast.success("Success");
     }
     return (
@@ -50,7 +50,7 @@ export default function FormPage() {
             <Input type="text" id="password" value={client.password} onChange={handleChange} />
 
             <Button type="submit">Submit</Button>
-            <Button formAction={testAction}>Button</Button>
+            <Button type="button" onClick={testAction}>Button</Button>
         </form>
     );
 }
