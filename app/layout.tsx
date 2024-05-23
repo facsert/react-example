@@ -7,12 +7,13 @@ import { Toaster } from "@/components/ui/sonner"
 
 import { Separator } from "@/components/ui/separator";
 
+// bg-muted/90
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   const darkTheme = useTheme(state => state.dark);
   return (
     <html lang="en" className={darkTheme? "dark": "light"}>
-      <body className="flex flex-col w-screen h-screen">
-        <div className="w-full h-[6vh]">
+      <body className="flex flex-col w-screen h-screen bg-muted/100"> 
+        <div className="w-full h-[6vh] bg-card">
           <Menu />
         </div>
         <Separator />
@@ -27,8 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </div>
         </div>
         <Separator />
-        <div className="w-full h-[6vh]">
-          footer
+        <div className="w-full h-[6vh] bg-card">
         </div>
       </body>
     </html>

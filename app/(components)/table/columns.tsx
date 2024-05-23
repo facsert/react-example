@@ -36,7 +36,6 @@ export const columns: ColumnDef<Student>[] = [
             )
         },
         cell: ({row}) => <div className="text-left px-4">{row.getValue("age")}</div>
-        // header: 
     },
     {
         accessorKey: "sex",
