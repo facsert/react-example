@@ -22,8 +22,8 @@
 
 
 
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//     pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
-// };
-// export default nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
+};
+export default nextConfig;
