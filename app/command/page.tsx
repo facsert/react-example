@@ -10,11 +10,11 @@ import { useState, useEffect } from "react"
 import io from "socket.io-client";
 import { toast } from 'sonner';
 
-const socket = io("http://localhost:8010/ws")
+const socket = io("http://localhost:8050")
 
 export default function CommandPage() {
     const [command, setCommand] = useState("ip a")
-    const [msg, setMsg] = useState("")
+    const [msg, setMsg] = useState("start\n")
 
     const sendCommand = () => {
         toast(`send ${command}`)
@@ -34,17 +34,26 @@ export default function CommandPage() {
         socket.on("command", (data:string)=> {
             setMsg(`${msg}\n${data}`)
         })
+
+        socket.on("msg", (data:string)=> {
+            console.log(data)
+            setMsg(`${msg}\n${data}`)
+        })
+
+        return () => {
+            socket.disconnect();
+        };
     }, [msg])
     return (
         <div className="flex flex-col gap-4 w-full h-full">
             <div className="flex flex-row gap-2">
                 <Label htmlFor="command">command</Label>
-                <Input id="command" value={command} onChange={() => setCommand(command)}></Input>
+                <Input id="command" value={command} onChange={(e) => setCommand(e.target.value)}></Input>
             </div>
             <Button onClick={sendCommand}>执行</Button>
             <Card className="w-full h-[50vh]">
                 <CardContent>
-                    {msg.split("\n").map((i, line) => <p key={i}>{line}</p>)}
+                    {msg.split("\n").map((line, i) => <p key={i}>{line}</p>)}
                 </CardContent>
             </Card>
         </div>
