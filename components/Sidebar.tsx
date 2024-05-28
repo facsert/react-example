@@ -25,6 +25,8 @@ import {
     SquareGanttChart,
     Pencil,
     Grid2X2,
+    ListMinus,
+    FileUp,
 } from "lucide-react";
 
 const homePages: {name: string, href: string, icon: React.ReactNode}[] = [
@@ -84,7 +86,12 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
     {
         name: 'Upload',
         href: '/upload',
-        icon: <Table2 className="mr-2 h-4 w-4" />,
+        icon: <FileUp  className="mr-2 h-4 w-4" />,
+    },
+    {
+        name: 'Combobox',
+        href: '/combobox',
+        icon: <ListMinus className="mr-2 h-4 w-4" />,
     },
 ];
 
