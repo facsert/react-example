@@ -10,7 +10,7 @@ import { useState, useEffect } from "react"
 import io from "socket.io-client";
 import { toast } from 'sonner';
 
-const socket = io("http://localhost:8050")
+const socket = io("http://192.168.1.103:4000")
 
 export default function CommandPage() {
     const [command, setCommand] = useState("ip a")
@@ -18,7 +18,7 @@ export default function CommandPage() {
 
     const sendCommand = () => {
         toast(`send ${command}`)
-        socket.emit("command", command);
+        socket.emit("test", command);
     }
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function CommandPage() {
             console.log(socket.id); // undefined
         });
 
-        socket.on("command", (data:string)=> {
+        socket.on("test", (data:string)=> {
             setMsg(`${msg}\n${data}`)
         })
 

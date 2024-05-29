@@ -93,6 +93,11 @@ const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
         href: '/combobox',
         icon: <ListMinus className="mr-2 h-4 w-4" />,
     },
+    {
+        name: 'Socket',
+        href: '/socket',
+        icon: <ListMinus className="mr-2 h-4 w-4" />,
+    },
 ];
 
 export default function Sidebar() {
