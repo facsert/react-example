@@ -50,6 +50,11 @@ const homePages: {name: string, href: string, icon: React.ReactNode}[] = [
         href: '/tasks',
         icon: <Grid2X2 className="mr-2 h-4 w-4" />,
     },
+    {
+        name: 'Login',
+        href: '/login',
+        icon: <UserRound className="mr-2 h-4 w-4" />,
+    },
 ]
 
 const componentsPages:{name: string, href: string, icon: React.ReactNode}[] = [
