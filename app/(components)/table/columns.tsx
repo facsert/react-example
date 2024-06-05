@@ -1,8 +1,20 @@
 "use client"
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from "@/components/ui/dialog"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export type Student = {
     id: number;
@@ -52,10 +64,41 @@ export const columns: ColumnDef<Student>[] = [
             const student = row.original
             return (
                 <div className="flex flex-row gap-4 ">
-                    <button>Edit</button>
-                    <button>Delete</button>
+                    {/* <button>Edit</button> */}
+                    <Edit />
+                    <Button variant="ghost">Delete</Button>
                 </div>
             )
         }
     }
 ]
+
+function Edit() {
+    return (
+        <div className="h-10 px-4 py-2 hover:bg-accent rounded-full">
+            <Dialog>
+                <DialogTrigger className="w-full h-full flex flex-row justify-center items-center">
+                    <p>Edit</p>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit</DialogTitle>
+                        <DialogDescription>
+                            Edit the student information
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div>
+                        <Label htmlFor="name">name</Label>
+                        <Input id="name"></Input>
+
+                        <Label htmlFor="age">age</Label>
+                        <Input id="age"></Input>
+                    </div>
+                    <DialogClose>
+                        Edit
+                    </DialogClose>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}

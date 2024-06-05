@@ -108,7 +108,7 @@ export default function UploadPage() {
                     <Label htmlFor="uploadFile" className="flex flex-col justify-end items-center w-full h-[300px] z-10 cursor-pointer"><p>{file?.name?? "upload File"}</p></Label>
                     <Input className="w-full h-[300px] z-30 opacity-0 cursor-pointer" id="uploadFile" type="file" onChange={(e) => setFile(e.target.files?.[0])}/>
                 </div>
-                <div className="w-full flex flex-row flex-wrap content-start gap-4 h-[20vh] border mt-4">
+                <div className="w-full flex flex-row flex-wrap content-start gap-4 h-[20vh] border mt-4 p-4 rounded-md bg-card">
                     {rules.map(r => <Item key={r.id} id={r.id} rules={rules} setRules={setRules} />)}
                     <AddItem rules={rules} setRules={setRules} />
                 </div>
