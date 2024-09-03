@@ -3,14 +3,14 @@
 import React, { useEffect, useState } from "react"
 import { Article, getArticleById } from "@/hook/article"
 import { 
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 
 interface ArticleId {
-    id: number
+  id: number
 }
 
 export default function ArticlePage( { id }: ArticleId )  {
@@ -18,20 +18,20 @@ export default function ArticlePage( { id }: ArticleId )  {
     const [article, setArticle] = useState<Article>()
     const articleId = id
     useEffect(() => {
-        getArticleById(articleId).then((article) => {
-            setArticle(article);
-        })
+      getArticleById(articleId).then((article) => {
+        setArticle(article);
+      })
     })
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{article?.title}</CardTitle>
-                <p>{article?.tags}</p>
-            </CardHeader>
-            <CardContent>
-                <p>{article?.content}</p>
-            </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>{article?.title}</CardTitle>
+          <p>{article?.tags}</p>
+        </CardHeader>
+        <CardContent>
+          <p>{article?.content}</p>
+        </CardContent>
+      </Card>
     );
 }
 
