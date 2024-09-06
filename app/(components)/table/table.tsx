@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowUpDown, Filter } from "lucide-react"
+import { ArrowUpDown, Filter, Columns } from "lucide-react"
 
 type DataItem = Record<string, string | number | null | undefined>
 
@@ -26,7 +26,7 @@ interface DynamicTableProps {
 }
 
 export default function DynamicTable({ data }: DynamicTableProps) {
-  const columns = useMemo(() => {
+  const allColumns = useMemo(() => {
     const allKeys = data.reduce((keys, item) => {
       Object.keys(item).forEach(key => keys.add(key))
       return keys
@@ -34,11 +34,14 @@ export default function DynamicTable({ data }: DynamicTableProps) {
     return Array.from(allKeys)
   }, [data])
 
+  const [columns, setColumns] = useState(allColumns)
+  const [tempColumns, setTempColumns] = useState(allColumns)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
   const [filters, setFilters] = useState<Record<string, Set<string>>>({})
   const [tempFilters, setTempFilters] = useState<Record<string, Set<string>>>({})
   const [filterValues, setFilterValues] = useState<Record<string, string>>({})
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [columnDropdownOpen, setColumnDropdownOpen] = useState(false)
 
   const sortedData = useMemo(() => {
     let sortableItems = [...data]
@@ -101,18 +104,77 @@ export default function DynamicTable({ data }: DynamicTableProps) {
 
   const uniqueValues = useMemo(() => {
     const values: Record<string, Set<string | number>> = {}
-    columns.forEach(column => {
+    allColumns.forEach(column => {
       values[column] = new Set(data.map(item => String(item[column] ?? '')))
     })
     return values
-  }, [data, columns])
+  }, [data, allColumns])
+
+  const toggleColumn = (column: string) => {
+    setColumnDropdownOpen(true)
+    setTempColumns(prev => 
+      prev.includes(column) ? prev.filter(col => col !== column) : [...prev, column]
+    )
+    
+  }
+
+  const applyColumnSelection = () => {
+    setColumns(tempColumns)
+    setColumnDropdownOpen(false)
+  }
+
+  const toggleAllColumns = () => {
+    setTempColumns(tempColumns.length === allColumns.length ? [] : [...allColumns])
+  }
 
   if (data.length === 0) {
     return <div className="text-center p-4">No data available</div>
   }
 
   return (
-    <div className="w-full overflow-auto rounded-md border">
+    <div className="w-full overflow-auto">
+      <div className="mb-4">
+        <DropdownMenu 
+          open={columnDropdownOpen}
+          onOpenChange={() => setColumnDropdownOpen(true)}
+        >
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <Columns className="mr-2 h-4 w-4" />
+              Select Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <div className="p-2">
+              <div className="flex justify-between mb-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleAllColumns}
+                >
+                  {tempColumns.length === allColumns.length ? 'Deselect All' : 'Select All'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={applyColumnSelection}
+                >
+                  Apply
+                </Button>
+              </div>
+              {allColumns.map(column => (
+                <DropdownMenuCheckboxItem
+                  key={column}
+                  checked={tempColumns.includes(column)}
+                  onCheckedChange={() => toggleColumn(column)}
+                >
+                  {column}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -138,7 +200,7 @@ export default function DynamicTable({ data }: DynamicTableProps) {
                         <Filter className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" onCloseAutoFocus={(e) => e.preventDefault()}>
+                    <DropdownMenuContent className="w-56">
                       <div className="p-2">
                         <Input
                           placeholder="Filter values..."
