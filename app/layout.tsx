@@ -18,11 +18,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           enableSystem
           disableTransitionOnChange
         >
-          <div className="w-full h-[6vh] bg-card">
+          <div className="w-full h-[7vh] bg-card">
             <Navbar />
           </div>
           <Separator />
-          <div className="flex flex-row w-full h-[94vh]">
+          <div className="flex flex-row w-full h-[93vh]">
             <div className="flex flex-row h-full w-[260px]">
               <Sidebar /> 
             </div>

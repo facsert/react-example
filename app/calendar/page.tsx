@@ -1,8 +1,7 @@
-
 export default function CalendarPage() {
-    return (
-       <>
-           <h1>About Page</h1>
-       </>
-    );
+  return (
+    <>
+      <h1>About Page</h1>
+    </>
+  );
 }

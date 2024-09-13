@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -10,61 +10,62 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-
+} from "@/components/ui/popover";
 
 export interface Option {
-    value: string
-    label: string
+  value: string;
+  label: string;
 }
 
-
-export default function ComboBoxResponsive({ 
-    statusList,
-    setValue
+export default function ComboBoxResponsive({
+  statusList,
+  setValue,
 }: {
-    statusList: Option[]
-    setValue: (value: Option) => void
+  statusList: Option[];
+  setValue: (value: Option) => void;
 }) {
-  const [open, setOpen] = useState(false)
-  const [Option, setOption] = useState<Option | null>(null)
+  const [open, setOpen] = useState(false);
+  const [Option, setOption] = useState<Option | null>(null);
 
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-            <Button variant="outline" className="w-[150px] justify-start">
-            {Option ? <>{Option.label}</> : <>Select Options</>}
-            </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start">
-            <Command>
-                <CommandInput placeholder="Filter status..." />
-                <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup>
-                    {statusList.map((status) => (
-                        <CommandItem
-                            key={status.value}
-                            value={status.value}
-                            onSelect={(value) => {
-                                setOption(statusList.find((priority) => priority.value === value) || null)
-                                setValue(status)
-                                setOpen(false)
-                            }}
-                            >
-                            {status.label}
-                        </CommandItem>
-                    ))}
-                    </CommandGroup>
-                </CommandList>
-            </Command>
-        </PopoverContent>
-        </Popover>
-    )
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-[150px] justify-start">
+          {Option ? <>{Option.label}</> : <>Select Options</>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Filter status..." />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup>
+              {statusList.map((status) => (
+                <CommandItem
+                  key={status.value}
+                  value={status.value}
+                  onSelect={(value) => {
+                    setOption(
+                      statusList.find((priority) => priority.value === value) ||
+                        null
+                    );
+                    setValue(status);
+                    setOpen(false);
+                  }}
+                >
+                  {status.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
 }
