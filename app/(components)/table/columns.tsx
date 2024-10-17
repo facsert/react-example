@@ -1,39 +1,51 @@
 "use client"
 
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogClose,
-} from "@/components/ui/dialog"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { ArrowUpDown } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-export type Student = {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
+// import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+}
+from "@/components/ui/form"
+
+export type Node = {
   id: number;
-  name: string;
-  age: number;
-  sex: "boy"|"girl";
-  create_at: string;
+  number: string;
+
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+
+  msg: string;
 }
 
 // 定义列的标题和内容的样式
-export const columns: ColumnDef<Student>[] = [
+export const columns: ColumnDef<Node>[] = [
   {
-    accessorKey: "name",
-    header: () => <div className="text-left">Name</div>,
-    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "age",
-    cell: ({ row }) => <div className="text-left px-4">{row.getValue("age")}</div>,
+    accessorKey: "number",
+    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("number")}</div>,
     header: ({column}) => {
       return (
         <div>
@@ -42,7 +54,7 @@ export const columns: ColumnDef<Student>[] = [
             className="cursor-pointer w-full flex flex-row justify-start items-center p-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >   
-            <p>Age</p>
+            <p>Number</p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -50,54 +62,132 @@ export const columns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "sex",
-    header: "性别",
-    cell: ({ row }) => <div className="text-left">{row.getValue("sex") === "boy" ? "男生" : "女生"}</div>,
+    accessorKey: "host",
+    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("host")}</div>,
+    header: ({column}) => {
+      return (
+        <div>
+          <Button
+            variant="ghost"
+            className="cursor-pointer w-full flex flex-row justify-start items-center p-2"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >   
+            <p>Host</p>
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      )
+    },
   },
   {
-    accessorKey: "create_at",
-    header: "Create At",
+    accessorKey: "port",
+    header: () => <div className="text-left">Port</div>,
+    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("port")}</div>,
+  },
+  {
+    accessorKey: "msg",
+    header: () => <div className="text-left">Msg</div>,
+    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("msg")}</div>,
   },
   {
     id: "actions",
+    header: () => <div className="text-left">Action</div>,
     cell: ({ row }) => {
-      const student = row.original
+      const node = row.original
       return (
         <div className="flex flex-row gap-4 ">
-          {/* <button>Edit</button> */}
-          <Edit />
-          <Button variant="ghost">Delete</Button>
+          <Edit node={node} />
+          <Button variant="outline">Delete</Button>
         </div>
       )
     }
   }
 ]
 
-function Edit() {
+function Edit({ node }: {node: Node}) {
+  const formSchema = z.object({
+    number: z.string().min(2, {
+      message: "number must be at least 2 characters.",
+    }),
+    host: z.string().min(2, {
+      message: "host must be at least 2 characters.",
+    }),
+    port: z.number().min(0, {
+      message: "port must be at least 2 characters.",
+    }),
+  })
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: node
+  })
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values)
+  }
     return (
-      <div className="h-10 px-4 py-2 hover:bg-accent rounded-full">
-        <Dialog>
-          <DialogTrigger className="w-full h-full flex flex-row justify-center items-center">
-            <p>Edit</p>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit</DialogTitle>
-              <DialogDescription>
-                Edit the student information
-              </DialogDescription>
-            </DialogHeader>
-            <div>
-              <Label htmlFor="name">name</Label>
-              <Input id="name"></Input>
-              <Label htmlFor="age">age</Label>
-              <Input id="age"></Input>
-            </div>
-            <DialogClose>
-              Edit
-            </DialogClose>
-          </DialogContent>
-        </Dialog>
-      </div>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline"> Edit </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{node.number}</DialogTitle>
+            <DialogDescription>modify node info</DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="number"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="host"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>host</FormLabel>
+                    <FormControl>
+                      <Input placeholder="host" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="port"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>port</FormLabel>
+                    <FormControl>
+                      <Input placeholder="port" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button type="submit"> Save </Button>
+                <DialogClose asChild>
+                  <Button type="button"> Cancel </Button>
+                </DialogClose>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     )
 }

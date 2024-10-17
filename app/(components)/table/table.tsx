@@ -15,9 +15,18 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowUpDown, Filter, Columns } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowUpDown, Filter, Columns, Edit, Trash2} from "lucide-react"
 
 type DataItem = Record<string, string | number | null | undefined>
 
@@ -25,7 +34,8 @@ interface DynamicTableProps {
   data: DataItem[]
 }
 
-export default function DynamicTable({ data }: DynamicTableProps) {
+export default function DynamicTable({ data: initialData }: DynamicTableProps) {
+  const [data, setData] = useState(initialData)
   const allColumns = useMemo(() => {
     const allKeys = data.reduce((keys, item) => {
       Object.keys(item).forEach(key => keys.add(key))
@@ -33,7 +43,6 @@ export default function DynamicTable({ data }: DynamicTableProps) {
     }, new Set<string>())
     return Array.from(allKeys)
   }, [data])
-
   const [columns, setColumns] = useState(allColumns)
   const [tempColumns, setTempColumns] = useState(allColumns)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
@@ -43,8 +52,11 @@ export default function DynamicTable({ data }: DynamicTableProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [columnDropdownOpen, setColumnDropdownOpen] = useState(false)
 
+  const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set())
+  const [editingItem, setEditingItem] = useState<DataItem | null>(null)
+
   const sortedData = useMemo(() => {
-    let sortableItems = [...data]
+    const sortableItems = [...data]
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key]?? Number.NEGATIVE_INFINITY
@@ -115,7 +127,6 @@ export default function DynamicTable({ data }: DynamicTableProps) {
     setTempColumns(prev => 
       prev.includes(column) ? prev.filter(col => col !== column) : [...prev, column]
     )
-    
   }
 
   const applyColumnSelection = () => {
@@ -125,6 +136,41 @@ export default function DynamicTable({ data }: DynamicTableProps) {
 
   const toggleAllColumns = () => {
     setTempColumns(tempColumns.length === allColumns.length ? [] : [...allColumns])
+  }
+
+  const handleCheckRow = (index: number) => {
+    setCheckedRows(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }
+
+  const handleCheckAll = () => {
+    if (checkedRows.size === filteredData.length) {
+      setCheckedRows(new Set())
+    } else {
+      setCheckedRows(new Set(filteredData.map((_, index) => index)))
+    }
+  }
+  const handleDeleteSelected = () => {
+    setData(prev => prev.filter((_, index) => !checkedRows.has(index)))
+    setCheckedRows(new Set())
+  }
+
+  const handleEditItem = (item: DataItem) => {
+    setEditingItem(item)
+  }
+
+  const handleSaveEdit = () => {
+    if (editingItem) {
+      setData(prev => prev.map(item => item.id === editingItem.id ? editingItem : item))
+      setEditingItem(null)
+    }
   }
 
   if (data.length === 0) {
@@ -174,10 +220,20 @@ export default function DynamicTable({ data }: DynamicTableProps) {
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button variant="destructive" onClick={handleDeleteSelected} disabled={checkedRows.size === 0}>
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete Selected
+        </Button>
       </div>
-      <Table>
+      <Table className='border rounded-md'>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-[50px]">
+              <Checkbox
+                checked={checkedRows.size === filteredData.length && filteredData.length > 0}
+                onCheckedChange={handleCheckAll}
+              />
+            </TableHead>
             {columns.map(column => (
               <TableHead key={column} className="text-center whitespace-nowrap">
                 <div className="flex items-center justify-center space-x-2">
@@ -244,20 +300,57 @@ export default function DynamicTable({ data }: DynamicTableProps) {
                 </div>
               </TableHead>
             ))}
+            <TableHead className="text-center whitespace-nowrap"> Action </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredData.map((item, index) => (
             <TableRow key={index}>
+              <TableCell>
+                <Checkbox
+                  checked={checkedRows.has(index)}
+                  onCheckedChange={() => handleCheckRow(index)}
+                />
+              </TableCell>
               {columns.map(column => (
                 <TableCell key={column} className="text-center whitespace-nowrap">
                   {item[column] ?? ''}
                 </TableCell>
               ))}
+              <TableCell>
+                <Button variant="ghost" size="sm" onClick={() => handleEditItem(item)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <Dialog open={editingItem !== null} onOpenChange={() => setEditingItem(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Item</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            {editingItem && Object.entries(editingItem).map(([key, value]) => (
+              <div key={key} className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor={key} className="text-left">
+                  {key}
+                </Label>
+                <Input
+                  id={key}
+                  value={value as string}
+                  onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleSaveEdit}>Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
