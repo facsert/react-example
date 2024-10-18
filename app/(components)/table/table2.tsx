@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Table,
   TableBody,
@@ -10,44 +10,62 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  Dialog,
+  DialogTrigger,
+  DialogDescription,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { toast } from "sonner";
 
-import { ArrowUpDown, Filter, ChevronDown, Trash2, Edit } from "lucide-react"
+import { ArrowUpDown, Check, ChevronDown, Trash2, Edit, Plus } from "lucide-react"
 
 
 export class Node {
-  id: number;
-  number: string;
+  // id: number;
+  number: NodeValue;
 
-  host: string;
-  port: number;
-  username: string;
-  password: string;
+  host: NodeValue;
+  port: NodeValue;
+  username: NodeValue;
+  password: NodeValue;
 
-  ua4_port: number;
-  ua5_port: number;
-  comm_port: number;
-  push_port: number;
+  ua4_port: NodeValue;
+  ua5_port: NodeValue;
+  comm_port: NodeValue;
+  push_port: NodeValue;
 
-  mountain: string;
-  version: string;
-  msg: string;
+  mountain: NodeValue;
+  version: NodeValue;
+  msg: NodeValue;
   
   constructor() {
-    this.id = 0
-    this.number = "";
+    // this.id = 0
+    this.number = "ENV";
 
     this.host = "";
     this.port = 0;
-    this.username = "";
-    this.password = "";
+    this.username = "root";
+    this.password = "EcsAdmin?";
   
     this.ua4_port = 0;
     this.ua5_port = 0;
@@ -55,23 +73,24 @@ export class Node {
     this.push_port = 0;
 
     this.mountain = "";
-    this.version = "";
-    this.msg = "";
+    this.version = "V2";
+    this.msg = "V2-RTS 193.168.1.1";
   }
 }
 
+
 type NodeKeys = keyof Node
+type NodeValue = string | number
 const defaultColumns: NodeKeys[] = ['number', 'mountain', 'version', 'host', 'port', 'msg'];
+const editColumns: NodeKeys[] = ['mountain', 'version', 'host', 'port', 'msg'];
+const allColumns: NodeKeys[] = Object.keys(new Node()) as NodeKeys[]
 
 export default function DataTable({ data }: { data: Node[]}) {
-  const allColumns: NodeKeys[] = Object.keys(new Node()) as NodeKeys[]
   const [columns, setColumns] = useState<NodeKeys[]>(defaultColumns)
-  const [checkedCol, setCheckedCol] = useState<NodeKeys[]>(defaultColumns)
   const [sortConfig, setSortConfig] = useState<{key: NodeKeys; direction: 'asc' | 'desc'} | null>(null)
-  const [dropMenuOpen, setDropMenuOpen] = useState(false)
+  const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set())
+  const [filters, setFilters] = useState<{NodeKeys: NodeValue}[]>([])
 
-  const [checkiTems, setCheckiTems] = useState<Set<number>>(new Set())
-  
   // 按 sortConfig 关键字和顺序排序数据
   const sortedData = useMemo(() => {
     const sortableItems = [...data]
@@ -92,38 +111,26 @@ export default function DataTable({ data }: { data: Node[]}) {
   }, [data, sortConfig])
   
   // 修改 sortConfig
-  const switchSortConfig = (key: NodeKeys) => {
+  const toggleSortConfig = (key: NodeKeys) => {
     let direction: 'asc' | 'desc' = 'asc'
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc'
     }
     setSortConfig({ key, direction })
   }
-  
-  // 修改已选择的 columns
-  const toggleColumn = (column: NodeKeys) => {
-    setDropMenuOpen(true)
-    setCheckedCol(prev => prev.includes(column)? prev.filter(col => col !== column) : [...prev, column])
-  }
-
-  // 按选择的 columns 显示数据
-  const applySelectColumns = () => {
-    setColumns(checkedCol)
-    setDropMenuOpen(false)
-  }
 
   // 数据全选或全不选
-  const handleCheckAll = () => {
-    if (checkiTems.size === filterData.length) {
-      setCheckiTems(new Set())
+  const handleCheckedAll = () => {
+    if (checkedItems.size === filterData.length) {
+      setCheckedItems(new Set())
     } else {
-      setCheckiTems(new Set(filterData.map((_, index) => index)))
+      setCheckedItems(new Set(filterData.map((_, index) => index)))
     }
   }
 
   // 单数据选择或不选
   const handleCheckItem = (index: number) => {
-    setCheckiTems(prev => {
+    setCheckedItems(prev => {
       const indexSet = new Set(prev)
       if (prev.has(index)) {
         indexSet.delete(index)
@@ -134,55 +141,24 @@ export default function DataTable({ data }: { data: Node[]}) {
     })
   }
 
+
   // 返回所有操作后的数据
   const filterData = useMemo(() => {
+    if (filters.length === 0) {
+      return sortedData
+    }
+    // sortedData.filter(item => {})
     return sortedData
-  }, [sortedData])
+  }, [sortedData, filters])
 
   return (
     <div>
       <div>
-        <DropdownMenu open={dropMenuOpen} onOpenChange={() => setDropMenuOpen(true)}>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline'>
-              Select Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {allColumns.map(column => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column}
-                  checked={checkedCol.includes(column)}
-                  onCheckedChange={() => toggleColumn(column)}
-                >
-                  {column}
-                </DropdownMenuCheckboxItem>
-              )
-            })}
-            <DropdownMenuSeparator />
-            <div>
-              <Button
-                variant='outline'
-                onClick={() => setCheckedCol(checkedCol.length === allColumns.length? []: [...allColumns])}
-              >
-                All
-              </Button>
-              <Button
-                variant='outline'
-                onClick={() => setDropMenuOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant='outline'
-                onClick={applySelectColumns}
-              >
-                Select
-              </Button>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AddItem />
+        <DeleteItems data={filterData} checkedItems={checkedItems} />
+        <SelectItem data={data} nodeKey="host" />
+        <SelectItem data={data} nodeKey="mountain" />
+        <SelectColumns setColumns={setColumns} />
       </div>
 
       <div className='rounded-md border'>
@@ -191,8 +167,8 @@ export default function DataTable({ data }: { data: Node[]}) {
             <TableRow>
               <TableHead>
                 <Checkbox
-                  checked={checkiTems.size === filterData.length && filterData.length > 0}
-                  onCheckedChange={handleCheckAll}
+                  checked={checkedItems.size === filterData.length && filterData.length > 0}
+                  onCheckedChange={handleCheckedAll}
                 />
               </TableHead>
               {columns.map((column, index) => {
@@ -202,7 +178,7 @@ export default function DataTable({ data }: { data: Node[]}) {
                       <Button
                         variant='ghost'
                         className='p-0 h-4'
-                        onClick={() => {switchSortConfig(column)}}
+                        onClick={() => {toggleSortConfig(column)}}
                       >
                         {column}
                         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -217,23 +193,27 @@ export default function DataTable({ data }: { data: Node[]}) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filterData.map((line, index) => {
+            {filterData.map((item, index) => {
               return (
                 <TableRow key={index}>
+
                   <TableCell>
                     <Checkbox
-                      checked={checkiTems.has(index)}
+                      checked={checkedItems.has(index)}
                       onCheckedChange={() => handleCheckItem(index)}
                     />
-                  </TableCell> 
+                  </TableCell>
+
                   {columns.map(head => {
                     return (
-                      <TableCell key={head}>{line[head]}</TableCell>
+                      <TableCell key={head}>{item[head]}</TableCell>
                     )
                   })}
+
                   <TableCell>
-                    <Button variant='outline' />
-                  </TableCell> 
+                    <EditItem item={item} />
+                  </TableCell>
+
                 </TableRow>
               )
             })}
@@ -243,3 +223,181 @@ export default function DataTable({ data }: { data: Node[]}) {
     </div>
   )
 }
+
+function AddItem() {
+  const [item, setItem] = useState<Node>(new Node())
+  // 新增单条数据
+  const handleAddItem = () => {
+    toast.info(`add ${JSON.stringify(item, null, 2)}`)
+  }
+
+  return (
+      <Dialog >
+        <DialogTrigger asChild>
+          <Button variant='outline'>
+            Add
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle> Add </DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            {allColumns && allColumns.map(col => {
+              return (
+                <div key={col}>
+                  <Label htmlFor={col}>{col}</Label>
+                  <Input
+                    id={col}
+                    value={item[col]}
+                    onChange={(e) => setItem({...item, [col]: e.target.value})}
+                  />
+                </div>
+              )
+            })}
+          </div>
+          <DialogFooter>
+            <DialogClose>
+              <Button variant='outline'>Cancel</Button>
+            </DialogClose>
+            <Button type="submit" variant='outline' onClick={handleAddItem}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+  );
+}
+
+function SelectColumns({ setColumns }: {setColumns: React.Dispatch<React.SetStateAction<NodeKeys[]>>}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [checkedCols, setCheckItCols] = useState<NodeKeys[]>(defaultColumns)
+
+  // 修改已选择的 columns
+  const toggleColumn = (column: NodeKeys) => {
+    setCheckItCols(prev => prev.includes(column)? prev.filter(col => col !== column) : [...prev, column])
+  }
+
+  // 应用选择的 columns 
+  const applySelectColumns = () => {
+    setColumns(checkedCols)
+    setIsOpen(false)
+  }
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <PopoverTrigger asChild>
+      <Button variant='outline'>
+        Select Columns <ChevronDown className="ml-2 h-4 w-4" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className='w-[200px]'>
+      <div className='flex flex-col items-start w-full'>
+        {allColumns.map(column => {
+          return (
+            <Button className='w-full flex flex-row justify-between' variant='ghost' key={column} onClick={() => toggleColumn(column)}>
+              {column}
+              <Checkbox checked={checkedCols.includes(column)} />
+            </Button>
+          )
+        })}
+      </div>
+      <div className='flex flex-row justify-between'>
+        <Button
+          variant='outline'
+          onClick={() => setCheckItCols(checkedCols.length === allColumns.length? []: [...allColumns])}
+        >
+          All
+        </Button>
+        <Button
+          variant='outline'
+          onClick={applySelectColumns}
+        >
+          Select
+        </Button>
+      </div>
+    </PopoverContent>
+  </Popover>
+  );
+};
+
+function EditItem({item}: {item: Node}) {
+  const [editItem, setEditItem] = useState<Node>(new Node())
+  // 编辑单条数据
+  const handleEditItem = () => {
+    toast.info(`edit ${JSON.stringify(editItem, null, 2)}`)
+  }
+  return (
+    <Dialog >
+      <DialogTrigger asChild>
+        <Button variant='outline' onClick={() => setEditItem(item)}>
+          <Edit className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit {editItem['number']}</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          {editColumns && editColumns.map(col => {
+            return (
+              <div key={col}>
+                <Label htmlFor={col}>{col}</Label>
+                <Input
+                  id={col}
+                  value={editItem[col]}
+                  onChange={(e) => setEditItem({...editItem, [col]: e.target.value})}
+                />
+              </div>
+            )
+          })}
+        </div>
+        <DialogFooter>
+          <DialogClose>
+            <Button variant='outline'>Close</Button>
+          </DialogClose>
+          <Button type="submit" variant='outline' onClick={handleEditItem}>Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteItems({data, checkedItems}:{data: Node[], checkedItems:Set<number>}) {
+  // 删除勾选的数据
+  const handleDeleteItems = () => {
+    const deleteItems = data.filter((_, index) => checkedItems.has(index))
+    const numbers = Array.from(deleteItems.map(line => line.number))
+    toast.info(`delete ${JSON.stringify(numbers, null, 2)}`)
+  }
+  return (
+    <Button variant='outline' onClick={handleDeleteItems}> Delete </Button>
+  );
+}
+
+function SelectItem({data, nodeKey}: {data: Node[], nodeKey: NodeKeys}) {
+  const unique = Array.from(new Set<number|string>(data.map(item => item[nodeKey])))
+  
+  return (
+    <DropdownMenu>
+      {/* <Button onClick={checkValue} >check</Button> */}
+    <DropdownMenuTrigger asChild>
+      <Button variant='outline'>
+        Select {nodeKey} <ChevronDown className="ml-2 h-4 w-4" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      {unique.map(value => {
+        return (
+          <DropdownMenuCheckboxItem
+            key={value}
+            // onCheckedChange={() => toggleColumn(column)}
+          >
+            {value}
+          </DropdownMenuCheckboxItem>
+        )
+      })}
+    </DropdownMenuContent>
+  </DropdownMenu>
+  );
+};
