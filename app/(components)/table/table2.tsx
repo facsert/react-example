@@ -23,7 +23,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -37,7 +36,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { toast } from "sonner";
 
-import { ArrowUpDown, Check, ChevronDown, Trash2, Edit, Plus } from "lucide-react"
+import { ArrowUpDown, ChevronDown, Trash2, Edit, CircleX } from "lucide-react"
 
 
 export class Node {
@@ -81,6 +80,7 @@ export class Node {
 
 type NodeKeys = keyof Node
 type NodeValue = string | number
+type Filter = {key: NodeKeys; value: NodeValue}
 const defaultColumns: NodeKeys[] = ['number', 'mountain', 'version', 'host', 'port', 'msg'];
 const editColumns: NodeKeys[] = ['mountain', 'version', 'host', 'port', 'msg'];
 const allColumns: NodeKeys[] = Object.keys(new Node()) as NodeKeys[]
@@ -89,7 +89,7 @@ export default function DataTable({ data }: { data: Node[]}) {
   const [columns, setColumns] = useState<NodeKeys[]>(defaultColumns)
   const [sortConfig, setSortConfig] = useState<{key: NodeKeys; direction: 'asc' | 'desc'} | null>(null)
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set())
-  const [filters, setFilters] = useState<{NodeKeys: NodeValue}[]>([])
+  const [filter, setFilter] = useState<Filter|null>(null)
 
   // 按 sortConfig 关键字和顺序排序数据
   const sortedData = useMemo(() => {
@@ -141,24 +141,31 @@ export default function DataTable({ data }: { data: Node[]}) {
     })
   }
 
+  //恢复默认
+  const resetData = () => {
+    setColumns(defaultColumns)
+    setSortConfig(null)
+    setCheckedItems(new Set())
+    setFilter(null)
+  }
 
   // 返回所有操作后的数据
   const filterData = useMemo(() => {
-    if (filters.length === 0) {
+    if (filter === null) {
       return sortedData
     }
-    // sortedData.filter(item => {})
-    return sortedData
-  }, [sortedData, filters])
+    return sortedData.filter(item => item[filter.key] === filter.value)
+  }, [sortedData, filter])
 
   return (
-    <div>
-      <div>
+    <div className='flex flex-col gap-2'>
+      <div className='flex flex-row justify-between'>
         <AddItem />
         <DeleteItems data={filterData} checkedItems={checkedItems} />
-        <SelectItem data={data} nodeKey="host" />
-        <SelectItem data={data} nodeKey="mountain" />
+        <SelectItem data={data} nodeKey="host" setFilter={setFilter} />
+        <SelectItem data={data} nodeKey="mountain" setFilter={setFilter} />
         <SelectColumns setColumns={setColumns} />
+        <Button variant='outline' onClick={resetData}> Reset </Button>
       </div>
 
       <div className='rounded-md border'>
@@ -229,6 +236,7 @@ function AddItem() {
   // 新增单条数据
   const handleAddItem = () => {
     toast.info(`add ${JSON.stringify(item, null, 2)}`)
+    console.log(`add ${JSON.stringify(item, null, 2)}`)
   }
 
   return (
@@ -259,7 +267,7 @@ function AddItem() {
           </div>
           <DialogFooter>
             <DialogClose>
-              <Button variant='outline'>Cancel</Button>
+              {/* <Button variant='outline'>Cancel</Button> */}
             </DialogClose>
             <Button type="submit" variant='outline' onClick={handleAddItem}>Save</Button>
           </DialogFooter>
@@ -291,13 +299,13 @@ function SelectColumns({ setColumns }: {setColumns: React.Dispatch<React.SetStat
       </Button>
     </PopoverTrigger>
     <PopoverContent className='w-[200px]'>
-      <div className='flex flex-col items-start w-full'>
+      <div className='flex flex-col items-start gap-1'>
         {allColumns.map(column => {
           return (
-            <Button className='w-full flex flex-row justify-between' variant='ghost' key={column} onClick={() => toggleColumn(column)}>
+            <div className='w-full flex flex-row justify-between items-center hover:bg-accent rounded-md px-2' key={column} onClick={() => toggleColumn(column)}>
               {column}
               <Checkbox checked={checkedCols.includes(column)} />
-            </Button>
+            </div>
           )
         })}
       </div>
@@ -354,7 +362,8 @@ function EditItem({item}: {item: Node}) {
         </div>
         <DialogFooter>
           <DialogClose>
-            <Button variant='outline'>Close</Button>
+            Close
+          {/* Close <Button variant='outline'>Close</Button> */}
           </DialogClose>
           <Button type="submit" variant='outline' onClick={handleEditItem}>Save</Button>
         </DialogFooter>
@@ -368,36 +377,47 @@ function DeleteItems({data, checkedItems}:{data: Node[], checkedItems:Set<number
   const handleDeleteItems = () => {
     const deleteItems = data.filter((_, index) => checkedItems.has(index))
     const numbers = Array.from(deleteItems.map(line => line.number))
-    toast.info(`delete ${JSON.stringify(numbers, null, 2)}`)
+    toast.custom((t) => (
+      <div className='w-full min-w-48 flex flex-row items-center justify-between'>
+        {`delete ${JSON.stringify(numbers, null, 2)}`}
+        <Button size='icon' variant='ghost' onClick={() => toast.dismiss(t)}>
+        <CircleX className='mx-2 h-4 w-4 bg-transparent' />
+      </Button>
+      </div>
+    ))
   }
   return (
-    <Button variant='outline' onClick={handleDeleteItems}> Delete </Button>
+    <Button variant='outline' onClick={handleDeleteItems}> 
+      Delete
+      <Trash2 className="ml-2 h-4 w-4" />
+    </Button>
   );
 }
 
-function SelectItem({data, nodeKey}: {data: Node[], nodeKey: NodeKeys}) {
+function SelectItem({data, nodeKey, setFilter}: {data: Node[], nodeKey: NodeKeys, setFilter:React.Dispatch<React.SetStateAction<Filter|null>>}) {
   const unique = Array.from(new Set<number|string>(data.map(item => item[nodeKey])))
-  
+  const selectValue = (value: string| number) => {
+    setFilter({key:nodeKey, value: value})
+  }
   return (
     <DropdownMenu>
-      {/* <Button onClick={checkValue} >check</Button> */}
-    <DropdownMenuTrigger asChild>
-      <Button variant='outline'>
-        Select {nodeKey} <ChevronDown className="ml-2 h-4 w-4" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent>
-      {unique.map(value => {
-        return (
-          <DropdownMenuCheckboxItem
-            key={value}
-            // onCheckedChange={() => toggleColumn(column)}
-          >
-            {value}
-          </DropdownMenuCheckboxItem>
-        )
-      })}
-    </DropdownMenuContent>
-  </DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant='outline'>
+          Select {nodeKey} <ChevronDown className="ml-2 h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {unique.map(value => {
+          return (
+            <DropdownMenuCheckboxItem
+              key={value}
+              onCheckedChange={() => selectValue(value)}
+            >
+              {value}
+            </DropdownMenuCheckboxItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

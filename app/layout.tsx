@@ -3,9 +3,10 @@ import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Separator } from "@/components/ui/separator";
-import { ThemeProvider } from "@/components/theme";
-import Sidebar from "@/components/sidebar";
-import Navbar from "@/components/navbar";
+import { ThemeProvider } from "@/app/(root)/theme"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/app/(root)/sidebar"
+import Navbar from "@/app/(root)/navbar"
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
@@ -18,20 +19,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           enableSystem
           disableTransitionOnChange
         >
-          <div className="w-full h-[7vh] bg-card">
-            <Navbar />
-          </div>
-          <Separator />
-          <div className="flex flex-row w-full h-[93vh]">
-            <div className="flex flex-row h-full w-[260px]">
-              <Sidebar /> 
-            </div>
-            <Separator orientation="vertical" />
-            <div className="h-full w-full p-4">
-              {children}
-              <Toaster position="top-center" />
-            </div>
-          </div>
+          <SidebarProvider>
+          <AppSidebar />
+            <main className="h-full w-full flex flex-col">
+              <div className="h-[5vh] flex flex-col justify-center bg-sidebar">
+                <Navbar />
+              </div>
+              <Separator />
+              <div className="h-full w-full p-2">
+                {children}
+                <Toaster position="top-center" />
+              </div>
+            </main>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
