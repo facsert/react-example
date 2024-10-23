@@ -23,6 +23,7 @@ export interface Option {
   label: string;
 }
 
+// 修改样式, 多选下拉，单选下拉(单次点击退出)
 export default function ComboBoxResponsive({
   statusList,
   setValue,
@@ -37,7 +38,7 @@ export default function ComboBoxResponsive({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-[150px] justify-start">
-          {Option ? <>{Option.label}</> : <>Select Options</>}
+          {Option ? <>{Option.label}</> : <>Select Options(beta)</>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">

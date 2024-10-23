@@ -28,7 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Separator />
               <div className="h-full w-full p-2">
                 {children}
-                <Toaster position="top-center" />
+                <Toaster position="top-center" richColors closeButton />
               </div>
             </main>
           </SidebarProvider>

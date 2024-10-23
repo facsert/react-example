@@ -35,52 +35,58 @@ export default function FormPage() {
     console.log(client.username);
     toast.success(`Test ${client.host} Success`);
   }
+
+  // TODO: 添加 Form 组件, 添加下拉, 输入框, checkbox 组件
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div>
-        <Label htmlFor="host">host</Label>
-        <Input
-          type="text"
-          id="host"
-          value={client.host}
-          onChange={handleChange}
-        />
-      </div>
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <form onSubmit={handleSubmit} className="w-1/3 grid grid-cols-5 gap-4 border rounded-md py-4">
+        <h1 className="col-start-2 col-span-3">form</h1>
 
-      <div>
-        <Label htmlFor="port">port</Label>
-        <Input
-          type="number"
-          id="port"
-          value={client.port}
-          onChange={handleChange}
-        />
-      </div>
+        <div className="col-start-2 col-span-3">
+          <Label htmlFor="host">host</Label>
+          <Input
+            type="text"
+            id="host"
+            value={client.host}
+            onChange={handleChange}
+          />
+        </div>
 
-      <div>
-        <Label htmlFor="username">username</Label>
-        <Input
-          type="text"
-          id="username"
-          value={client.username}
-          onChange={handleChange}
-        />
-      </div>
+        <div className="col-start-2 col-span-3">
+          <Label htmlFor="port">port</Label>
+          <Input
+            type="number"
+            id="port"
+            value={client.port}
+            onChange={handleChange}
+          />
+        </div>
 
-      <div>
-        <Label htmlFor="password">password</Label>
-        <Input
-          type="text"
-          id="password"
-          value={client.password}
-          onChange={handleChange}
-        />
-      </div>
+        <div className="col-start-2 col-span-3">
+          <Label htmlFor="username">username</Label>
+          <Input
+            type="text"
+            id="username"
+            value={client.username}
+            onChange={handleChange}
+          />
+        </div>
 
-      {/* <Button type="submit">Submit</Button> */}
-      <Button type="button" onClick={testAction}>
-        Button
-      </Button>
-    </form>
+        <div className="col-start-2 col-span-3">
+          <Label htmlFor="password">password</Label>
+          <Input
+            type="text"
+            id="password"
+            value={client.password}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* <Button type="submit">Submit</Button> */}
+        <Button className="col-start-2 col-span-3" type="button" onClick={testAction}>
+          Button
+        </Button>
+      </form>
+    </div>
   );
 }

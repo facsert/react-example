@@ -6,6 +6,7 @@ const data = [
     { name: "Bob", age: 40, city: "Paris" },
 ]
 
+// TODO: 简化，标准化表格代码
 export default function TablePage() {
   return (
     <div>

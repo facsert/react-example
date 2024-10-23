@@ -27,10 +27,8 @@ interface Link {
   filename: string;
 }
 
-// { id: 1, name: "blacklist", checked: false },
-// { id: 2, name: "timeout", checked: false },
-// { id: 3, name: "panic", checked: false },
 
+// TODO: 修改布局和内容
 export default function UploadPage() {
   const [file, setFile] = useState<File>();
   const [link, setLink] = useState<Link>({

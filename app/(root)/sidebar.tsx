@@ -52,8 +52,8 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "Components",
+      url: "/",
       icon: SquareTerminal,
       isActive: true,
       items: [
@@ -62,31 +62,40 @@ const data = {
           url: "/button",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Card",
+          url: "/card",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Combobox",
+          url: "/combobox",
+        },
+        {
+          title: "Form",
+          url: "/form",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Layouts",
       url: "#",
       icon: Bot,
+      // isActive: true,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Flow",
+          url: "/flow",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Form",
+          url: "/forms",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Table",
+          url: "/table",
+        },
+        {
+          title: "Upload",
+          url: "/upload",
         },
       ],
     },
@@ -95,22 +104,6 @@ const data = {
       url: "#",
       icon: BookOpen,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
       ],
     },
     {
