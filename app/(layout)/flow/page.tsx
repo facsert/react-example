@@ -9,7 +9,6 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-// import { Article, getArticles } from "@/hook/article";
 import { useEffect, useState, useMemo } from "react";
 
 export type Article = {
@@ -70,11 +69,6 @@ export const localArticles: Article[] = [
 export default function FlowPage() {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
-  // useEffect(() => {
-  //   getArticles().then((articles) => {
-  //     setArticles(articles);
-  //   });
-  // }, []);
   useMemo(() => {
     setArticles(localArticles);
   }, [])
@@ -95,7 +89,6 @@ export default function FlowPage() {
                 <CardDescription>{String(article.date)}</CardDescription>
               </CardHeader>
               <CardContent>{article.content}</CardContent>
-              {/* <CardContent>{article.tags.join(", ")}</CardContent> */}
             </Card>
           );
         })}

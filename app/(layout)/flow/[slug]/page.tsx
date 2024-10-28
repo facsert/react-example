@@ -8,11 +8,7 @@ import { localArticles, Article} from "../page";
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
   const [article, setArticle] = useState<Article>();
-  // useEffect(() => {
-  //   getArticleById(Number(params.slug)).then((article) => {
-  //     setArticle(article);
-  //   });
-  // }, [params.slug]);
+
   useMemo(() => {
     setArticle(localArticles[Number(params.slug)]);
   }, [params.slug])
