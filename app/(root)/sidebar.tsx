@@ -123,7 +123,7 @@ function SidebarMain({sidebarGroups, ...props}: {sidebarGroups: MenuGroup[]}) {
                   {group.items?.map((item) => (
                     <SidebarMenuSubItem key={item.title}>
                       <SidebarMenuSubButton asChild onClick={() => router.push(item.url)}>
-                          <span>{item.title}</span>
+                        <span>{item.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

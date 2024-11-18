@@ -1,10 +1,14 @@
 "use client";
-import { toast } from "sonner";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { FormEvent, useState, ChangeEvent } from "react";
+import { toast } from "sonner"
 import ReactForm from "./react-form";
+import { set } from "react-hook-form";
+import { createPrerenderState } from "next/dist/server/app-render/dynamic-rendering";
 
 interface Client {
   host: string;
@@ -14,80 +18,99 @@ interface Client {
 }
 
 export default function FormPage() {
-  const [client, setClient] = useState<Client>({
-    host: "",
-    port: 0,
-    username: "",
-    password: "",
-  });
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    console.log(client);
-  }
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = event.target as HTMLInputElement;
-    setClient({ ...client, [id]: value });
-    console.log(client);
-  };
-
-  function testAction() {
-    console.log("TEST ACTION");
-    console.log(client.host);
-    console.log(client.username);
-    toast.success(`Test ${client.host} Success`);
-  }
-
   // TODO: 添加 Form 组件, 添加下拉, 输入框, checkbox 组件
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-1/3 grid grid-cols-5 gap-4 border rounded-md py-4">
-        <h1 className="col-start-2 col-span-3">form</h1>
-
-        <div className="col-start-2 col-span-3">
-          <Label htmlFor="host">host</Label>
-          <Input
-            type="text"
-            id="host"
-            value={client.host}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-start-2 col-span-3">
-          <Label htmlFor="port">port</Label>
-          <Input
-            type="number"
-            id="port"
-            value={client.port}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-start-2 col-span-3">
-          <Label htmlFor="username">username</Label>
-          <Input
-            type="text"
-            id="username"
-            value={client.username}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-start-2 col-span-3">
-          <Label htmlFor="password">password</Label>
-          <Input
-            type="text"
-            id="password"
-            value={client.password}
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* <Button type="submit">Submit</Button> */}
-        <Button className="col-start-2 col-span-3" type="button" onClick={testAction}>
-          Button
-        </Button>
-      </form>
+    <div className="w-full h-full flex flex-row items-center justify-center">
+      <ReactForm1 />
     </div>
   );
 }
+
+function ReactForm1({...props}) {
+  const defaultClient: Client= {
+    host: "192.168.1.100",
+    port: 3000,
+    username: "root",
+    password: "admin",
+  }
+  const [client, setClient] = useState<Client>(defaultClient);
+  async function handleSubmit(formData: FormData) {
+    const port: number = (formData.get('port')?? client.port) as number;
+    setClient(preState => ({...preState,
+      host: formData.get('host') as string,
+      port: (formData.get('port')?? client.port) as number,
+      username: formData.get('username') as string,
+      password: formData.get('password') as string,
+    }))
+    toast.success(JSON.stringify(client));
+    // toast.success(`Host: ${formData.get('host')}`);
+  }
+
+  const handleChange = () => {
+
+  }
+  
+  const handleReset = () => setClient(defaultClient);
+
+  return (
+    <div className="border rounded-md p-4 w-full max-w-md gap-4" {...props}>
+      <form action={handleSubmit}>
+        <div>
+          <Label htmlFor="host">Host</Label>
+          <Input 
+            name='host' 
+            type="text" 
+            id="host" 
+            defaultValue={client.host}
+            onChange={(e) => setClient(preState => ({...preState, host: e.target.value}))}
+            value={client.host}
+          />
+        </div>
+        <div>
+          <Label htmlFor="port">Port</Label>
+          <Input 
+            name='port'
+            type="number"
+            id="port"
+            defaultValue={client.port}
+            onChange={(e) => setClient(preState => ({...preState, port: e.target.valueAsNumber}))}
+            value={client.port}
+          />
+        </div>
+        <div>
+          <Label htmlFor="username">Username</Label>
+          <Input
+            name='username'
+            type="text"
+            id="username"
+            defaultValue={client.username}
+            onChange={(e) => setClient(preState => ({...preState, username: e.target.value}))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            name='password'
+            type="text"
+            id="password"
+            defaultValue={client.password}
+            onChange={(e) => setClient(preState => ({...preState, password: e.target.value}))}
+          />
+        </div>
+        <Button type="submit">Submit</Button>
+        <Button type="button" onClick={handleReset}>Reset</Button>
+      </form>
+      <br />
+      <div>
+        HOST: {client.host}
+        <br />
+        PORT: {client.port}
+        <br />
+        USERNAME: {client.username}
+        <br />
+        PASSWORD: {client.password}
+      </div>
+    </div>
+    );
+};
+
