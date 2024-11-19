@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { FormEvent, useState, ChangeEvent } from "react";
 import { toast } from "sonner"
 import ReactForm from "./react-form";
 import { set } from "react-hook-form";
-import { createPrerenderState } from "next/dist/server/app-render/dynamic-rendering";
+
 
 interface Client {
   host: string;
@@ -22,6 +24,7 @@ export default function FormPage() {
   return (
     <div className="w-full h-full flex flex-row items-center justify-center">
       <ReactForm1 />
+      <ReactForm2 />
     </div>
   );
 }
@@ -43,13 +46,8 @@ function ReactForm1({...props}) {
       password: formData.get('password') as string,
     }))
     toast.success(JSON.stringify(client));
-    // toast.success(`Host: ${formData.get('host')}`);
   }
 
-  const handleChange = () => {
-
-  }
-  
   const handleReset = () => setClient(defaultClient);
 
   return (
@@ -114,3 +112,89 @@ function ReactForm1({...props}) {
     );
 };
 
+function ReactForm2({...props}) {
+  type Person = {
+    name: string;
+    age: number;
+    sex: 'boy' | 'girl';
+    hobby: 'walk'| 'swim'|'ride'
+  }
+  const defaultData: Person = {
+    hobby: "walk",
+    sex: 'boy',
+    age: 18,
+    name: 'John',
+  }
+
+  const [person, setPerson] = useState<Person>(defaultData);
+  async function handleSubmit(formData: FormData) {
+    // const port: number = (formData.get('port')?? client.port) as number;
+    // setClient(preState => ({...preState,
+    //   host: formData.get('host') as string,
+    //   port: (formData.get('port') ?? client.port) as number,
+    //   username: formData.get('username') as string,
+    //   password: formData.get('password') as string,
+    // }))
+    toast.success(JSON.stringify(person));
+  }
+  
+  const handleReset = () => setPerson(defaultData);
+  return (
+    <div className="border rounded-md p-4 w-full max-w-md gap-4" {...props}>
+      <form action={handleSubmit}>
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input 
+            name='name' 
+            type="text" 
+            id="name" 
+            defaultValue={person.name}
+            onChange={(e) => setPerson(preState => ({...preState, name: e.target.value}))}
+            value={person.name}
+          />
+        </div>
+        <div>
+          <Label htmlFor="age">Age</Label>
+          <Input 
+            name='age' 
+            type="number" 
+            id="age" 
+            defaultValue={person.age}
+            onChange={(e) => setPerson(preState => ({...preState, age: e.target.valueAsNumber}))}
+            value={person.age}
+          />
+        </div>
+        <RadioGroup defaultValue="boy" onValueChange={(value) => console.log(value)}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem id="boy" value="boy" />
+            <Label htmlFor="boy">Boy</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem id="girl" value="girl" />
+            <Label htmlFor="girl">Girl</Label>
+          </div>
+        </RadioGroup>
+        <div>
+          <Checkbox id="swim" name="hobby" value="swim" />
+          <Label htmlFor="swim">Swim</Label>
+          <Checkbox id="ride" name="hobby" value="ride" />
+          <Label htmlFor="ride">Ride</Label>
+          <Checkbox id="walk" name="hobby" value="walk" />
+          <Label htmlFor="walk">Walk</Label>
+        </div>
+        <Button type="submit">Submit</Button>
+        <Button type="button" onClick={handleReset}>Reset</Button>
+      </form>
+      <br />
+      <div>
+        Fruit: apple
+        <br />
+        
+        <br />
+      
+        <br />
+  
+      </div>
+    </div>
+    );
+};
