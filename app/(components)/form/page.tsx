@@ -3,20 +3,41 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { FormEvent, useState, ChangeEvent, FormEventHandler } from "react";
 import { toast } from "sonner"
-import ReactForm from "./react-form";
-import { set } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from "@/components/ui/select";
 
 
-interface Client {
-  host: string;
-  port: number;
-  username: string;
-  password: string;
+class Client {
+  constructor(
+    public host: string = "192.168.1.100",
+    public port: number = 22,
+    public username: string = "root",
+    public password: string = "admin"
+  ) {}
 }
 
 export default function FormPage() {
@@ -25,17 +46,13 @@ export default function FormPage() {
     <div className="w-full h-full flex flex-row items-center justify-center gap-2">
       <ReactForm1 />
       <ReactForm2 />
+      <ReactForm3 />
     </div>
   );
 }
 
 function ReactForm1({...props}) {
-  const defaultClient: Client= {
-    host: "192.168.1.100",
-    port: 3000,
-    username: "root",
-    password: "admin",
-  }
+  const defaultClient: Client= new Client();
   const [client, setClient] = useState<Client>(defaultClient);
   async function handleSubmit(formData: FormData) {
     const port: number = (formData.get('port')?? client.port) as number;
@@ -113,21 +130,17 @@ function ReactForm1({...props}) {
     );
 };
 
-function ReactForm2({...props}) {
-  type Person = {
-    name: string;
-    age: number;
-    sex: 'boy' | 'girl';
-    hobby: ('walk'| 'swim'|'ride')[]
-  }
-  const defaultData: Person = {
-    name: 'John',
-    age: 18,
-    sex: 'boy',
-    hobby: ["walk"],
-  }
+class Person {
+  constructor(
+    public name: string = 'John',
+    public age: number = 18,
+    public sex: 'boy' | 'girl' = 'boy',
+    public hobby: ('walk'| 'swim'|'ride')[] = ["walk"],
+  ) {};
+}
 
-  const [person, setPerson] = useState<Person>(defaultData);
+function ReactForm2({...props}) {
+  const [person, setPerson] = useState<Person>(new Person());
   const handleChange = (event: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { name, value } = event.target;
     setPerson(preState => ({...preState, [name]: value }));
@@ -144,7 +157,7 @@ function ReactForm2({...props}) {
   const handleSubmit = (formData: FormData) => {
     toast.success(JSON.stringify(person));
   }
-  const handleReset = () => setPerson(defaultData);
+  const handleReset = () => setPerson(new Person());
   return (
     <div className="border rounded-md p-4 w-full max-w-md" {...props}>
       <form action={handleSubmit} className="flex flex-col gap-4">
@@ -219,4 +232,118 @@ function ReactForm2({...props}) {
       </div>
     </div>
     );
+};
+
+class Phone {
+  constructor(
+    public user: string = 'John',
+    public phoneNumber: string = '13800138000',
+    public system: 'ios' | 'android' = 'ios',
+    public size: 'mini' | 'plus' | 'ultra' = 'plus',
+  ) {}
+}
+
+const formSchema = z.object({
+  user: z.string().min(2),
+  phoneNumber: z.string().min(11).max(11),
+  system: z.enum(['ios', 'android']),
+  size: z.enum(['mini', 'plus', 'ultra']),
+})
+
+function ReactForm3({...props}) {
+  const [phone, setPhone] = useState(new Phone());
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: new Phone(),
+  });
+
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+    toast.success(JSON.stringify(data));
+    console.log(data);
+  };
+  return (
+    <div className="border rounded-md p-4 w-full max-w-md" {...props}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+          <FormField
+            name="user"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>User</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your name" {...field} />
+                </FormControl>
+                <FormMessage >Please enter your name</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="phoneNumber"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your phone number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="system"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>System</FormLabel>
+                <FormControl>
+                <RadioGroup defaultValue={field.value} onValueChange={field.onChange}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem id="ios" value="ios" checked={field.value === 'ios'} />
+                    <Label htmlFor="ios">IOS</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem id="android" value="android" checked={field.value === 'android'} />
+                    <Label htmlFor="android">Android</Label>
+                  </div>
+                </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="size"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Select defaultValue={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue defaultValue={field.value} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="mini">mini</SelectItem>
+                        <SelectItem value="plus">plus</SelectItem>
+                        <SelectItem value="ultra">ultra</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </div>
+  );
 };
