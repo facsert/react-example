@@ -79,6 +79,10 @@ const pageList: MenuGroup[] = [
   icon: Bot,
   items: [
     {
+      title: "Accordion",
+      url: "/accordion",
+    },
+    {
       title: "Flow",
       url: "/flow",
     },
