@@ -14,6 +14,7 @@ import {
   SquareTerminal,
   ChevronRight,
   type LucideIcon,
+  FileCode,
 } from "lucide-react"
 
 import {
@@ -97,6 +98,19 @@ const pageList: MenuGroup[] = [
     {
       title: "Upload",
       url: "/upload",
+    },
+  ],
+},{
+  title: "CSS",
+  icon: FileCode,
+  items: [
+    {
+      title: "Flex",
+      url: "/flex",
+    },
+    {
+      title: "Grid",
+      url: "/grid",
     },
   ],
 }
