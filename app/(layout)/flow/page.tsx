@@ -9,69 +9,17 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 
-export type Article = {
-  title: string;
-  content: string;
-  date: string;
-};
-
-export const localArticles: Article[] = [
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 2",
-    content: "This is the second flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 3",
-    content: "This is the third flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-  {
-    title: "Flow 1",
-    content: "This is the first flow",
-    date: "2021-01-01",
-  },
-];
+import { LocalArticles, Article } from "./articles";
 
 // TODO: 添加显示内容的功能
 export default function FlowPage() {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
   useMemo(() => {
-    setArticles(localArticles);
-  }, [])
+    setArticles(LocalArticles);
+  }, []);
   return (
     <div className="flex justify-center flex-row w-full h-full">
       <ScrollArea className="h-[80vh] rounded-md border p-2">
@@ -96,3 +44,5 @@ export default function FlowPage() {
     </div>
   );
 }
+
+

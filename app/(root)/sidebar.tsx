@@ -70,12 +70,16 @@ const pageList: MenuGroup[] = [
         url: "/combobox",
       },
       {
+        title: "Editor",
+        url: "/editor",
+      },
+      {
         title: "Form",
         url: "/form",
       },
       {
-        title: "Input",
-        url: "/input",
+        title: "PromptInput",
+        url: "/promptInput",
       },
     ],
   },

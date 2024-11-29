@@ -21,6 +21,7 @@ import {
 
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { cn } from "@/lib/utils"
 
 const SelectList = [
   "Apple",
@@ -32,33 +33,72 @@ const SelectList = [
   "Beef"
 ]
 
-export default function InputPage() {
-  const [open, setOpen] = useState(false)
+export default function InputPage<T>() {
   const [value, setValue] = useState('')
+
+  const handleInput = (value: string) => {
+    setValue(value)
+    console.log(value)
+  }
+
+  return (
+    <div className='flex flex-col items-center justify-center'>
+      <PromptInput items={SelectList} className='w-[35vw]' onChange={handleInput} />
+      <div className='mt-4'>
+        Value: {value}
+      </div>
+    </div>
+  );
+};
+
+function PromptInput({
+  className='',
+  placeholder='',
+  defaultValue,
+  onChange,
+  items=[],
+  ...props
+}:{
+  width?: string,
+  className?: string,
+  placeholder?: string,
+  defaultValue?: string,
+  onChange?: (value: string) => void,
+  items: string[],
+}) {
+  const [open, setOpen] = useState(false)
+  const [inputValue, setInputValue] = useState(defaultValue)
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setOpen(true)
-    setValue(event.target.value)
+    setInputValue(event.target.value)
   }
 
   const handleSelect = (item: string) => {
-    setValue(item)
+    onChange?.(item)
+    setInputValue(item)
     setOpen(false)
   }
   return (
-    <div className='flex justify-center'>
     <TooltipProvider>
       <Tooltip open={open} onOpenChange={setOpen}>
         <TooltipTrigger asChild>
-          <div>
+          <div className={cn('w-[20vw]', className)}>
             <Label htmlFor='input'> Search </Label>
-            <Input id="input" onClick={() => setOpen(true)} onChange={(e) => handleInput(e)} value={value} className='w-[15vw]'  />
+            <Input
+              id="input"
+              onClick={() => setOpen(true)}
+              onChange={(e) => handleInput(e)} 
+              value={inputValue} 
+              className="w-full"
+              {...props}
+            />
           </div>
         </TooltipTrigger>
         <TooltipContent>
           <Command>
-            <CommandInput value={value}  />
-            <CommandList>
+            <CommandInput value={inputValue}  />
+            <CommandList className={cn(`w-[20vw]`, className)}>
               <CommandEmpty>Not Found</CommandEmpty>
               {SelectList.map((item, index) => (
                 <CommandItem
@@ -74,6 +114,5 @@ export default function InputPage() {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-    </div>
   );
 };
