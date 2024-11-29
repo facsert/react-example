@@ -73,6 +73,10 @@ const pageList: MenuGroup[] = [
         title: "Form",
         url: "/form",
       },
+      {
+        title: "Input",
+        url: "/input",
+      },
     ],
   },
 {
