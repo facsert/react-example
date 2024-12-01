@@ -20,9 +20,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           disableTransitionOnChange
         >
           <SidebarProvider>
-          <AppSidebar />
+          <AppSidebar className="bg-muted/50" />
             <main className="h-full w-full flex flex-col">
-              <div className="h-[5vh] flex flex-col justify-center bg-sidebar">
+              <div className="h-[5vh] flex flex-col justify-center bg-muted/50">
                 <Navbar />
               </div>
               <Separator />

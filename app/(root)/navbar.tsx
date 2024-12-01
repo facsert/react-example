@@ -15,7 +15,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 export default function Navbar() {
   const { setTheme } = useTheme();
   return (
-    <div className="w-full  flex flex-row justify-between items-center">
+    <div className="w-full flex flex-row justify-between items-center">
       <div>
         <SidebarTrigger />
       </div>

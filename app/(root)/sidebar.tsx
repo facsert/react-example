@@ -37,6 +37,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
 
@@ -100,6 +101,10 @@ const pageList: MenuGroup[] = [
       url: "/forms",
     },
     {
+      title: "Search",
+      url: "/search",
+    },
+    {
       title: "Table",
       url: "/table",
     },
@@ -148,7 +153,7 @@ function SidebarMain({sidebarGroups, ...props}: {sidebarGroups: MenuGroup[]}) {
                 <SidebarMenuSub>
                   {group.items?.map((item) => (
                     <SidebarMenuSubItem key={item.title}>
-                      <SidebarMenuSubButton asChild onClick={() => router.push(item.url)}>
+                      <SidebarMenuSubButton className="hover:bg-card cursor-pointer" asChild onClick={() => router.push(item.url)}>
                         <span>{item.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
