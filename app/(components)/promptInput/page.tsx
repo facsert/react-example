@@ -1,5 +1,5 @@
 "use client"
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect, use } from 'react'
 
 import {
   Tooltip,
@@ -33,7 +33,7 @@ const SelectList = [
   "Beef"
 ]
 
-export default function InputPage<T>() {
+export default function InputPage() {
   const [value, setValue] = useState('')
 
   const handleInput = (value: string) => {
@@ -43,7 +43,16 @@ export default function InputPage<T>() {
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <PromptInput items={SelectList} className='w-[35vw]' onChange={handleInput} />
+      <PromptInput 
+        items={SelectList} 
+        value={value}
+        label="Commit" 
+        defaultValue="Banana"  
+        onChange={(value) => {
+          setValue(value)
+          console.log(`Commit ${value}`)
+        }}
+      />
       <div className='mt-4'>
         Value: {value}
       </div>
@@ -52,6 +61,8 @@ export default function InputPage<T>() {
 };
 
 function PromptInput({
+  label="label",
+  value='',
   className='',
   placeholder='',
   defaultValue,
@@ -59,19 +70,26 @@ function PromptInput({
   items=[],
   ...props
 }:{
-  width?: string,
+  label?: string,
+  value?: string,
   className?: string,
   placeholder?: string,
   defaultValue?: string,
   onChange?: (value: string) => void,
   items: string[],
 }) {
+
   const [open, setOpen] = useState(false)
-  const [inputValue, setInputValue] = useState(defaultValue)
+  const [inputValue, setInputValue] = useState(defaultValue || '')
+  
+  useEffect(() => {
+    setInputValue(value)
+  }, [value])
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setOpen(true)
     setInputValue(event.target.value)
+    onChange?.(event.target.value)
   }
 
   const handleSelect = (item: string) => {
@@ -89,7 +107,7 @@ function PromptInput({
               id="input"
               onClick={() => setOpen(true)}
               onChange={(e) => handleInput(e)} 
-              value={inputValue} 
+              value={value} 
               className="w-full"
               {...props}
             />
@@ -97,7 +115,7 @@ function PromptInput({
         </TooltipTrigger>
         <TooltipContent>
           <Command>
-            <CommandInput value={inputValue}  />
+            <CommandInput value={value}  />
             <CommandList className={cn(`w-[20vw]`, className)}>
               <CommandEmpty>Not Found</CommandEmpty>
               {SelectList.map((item, index) => (

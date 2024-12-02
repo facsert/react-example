@@ -162,11 +162,11 @@ function ReactForm2({...props}) {
     <div className="border rounded-md p-4 w-full max-w-md" {...props}>
       <form action={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Name{person.name.length === 0 && <span className="text-red-600">(required)</span>}</Label>
           <Input 
             name='name' 
             type="text" 
-            id="name" 
+            id="name"
             defaultValue={person.name}
             onChange={handleChange}
             value={person.name}
@@ -244,7 +244,7 @@ class Phone {
 }
 
 const formSchema = z.object({
-  user: z.string().min(2),
+  user: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
   phoneNumber: z.string().min(11).max(11),
   system: z.enum(['ios', 'android']),
   size: z.enum(['mini', 'plus', 'ultra']),
@@ -275,7 +275,7 @@ function ReactForm3({...props}) {
                 <FormControl>
                   <Input placeholder="Enter your name" {...field} />
                 </FormControl>
-                <FormMessage >Please enter your name</FormMessage>
+                {/* <FormMessage >Please enter your name</FormMessage> */}
               </FormItem>
             )}
           />

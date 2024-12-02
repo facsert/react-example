@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Plus, Trash2 } from 'lucide-react'
+import PromptInput from "@/app/(components)/promptInput/page";
 
 class Person {
   constructor(
@@ -22,6 +23,16 @@ class Person {
     public age: number = 18,
   ) {}
 }
+
+const SelectList = [
+  "Apple",
+  "Banana",
+  "Pear",
+  "Peach",
+  "Water",
+  "Rice",
+  "Beef"
+]
 
 export default function AccordionPage() {
   const [persons, setPersons] = useState<Person[]>([new Person()])
@@ -33,7 +44,7 @@ export default function AccordionPage() {
 
   const addItem = (index: number, event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    setPersons(pre => [...pre.slice(0, index + 1), new Person(), ...pre.slice(index + 1)]);
+    setPersons(pre => [...pre.slice(0, index + 1), {...pre[index]}, ...pre.slice(index + 1)]);
   };
 
   const deleteItem = (index: number, event: MouseEvent<HTMLButtonElement>) => {
@@ -46,22 +57,24 @@ export default function AccordionPage() {
   }
   return (
     <div className="p-4 flex flex-col gap-4">
-      <Accordion type="multiple" className="w-full px-8">
+      <Accordion type="multiple"  className="w-full px-8">
         {persons.map((person, index) => (
           <AccordionItem  key={index} value={`item-${index}`}>
-            <div className="flex justify-between items-center">
-              <AccordionTrigger>
-                {`item-${index}`}
-              </AccordionTrigger>
-              <div>
-              <Button onClick={(event) => addItem(index, event)}>
-              <Plus className="h-4 w-4" />
-                Add
-              </Button>
-              <Button disabled={persons.length === 1} onClick={(event) => deleteItem(index, event)}>
-              <Trash2 className="h-4 w-4" />
-                Delete
-              </Button>
+            <div className="w-full grid grid-cols-8 items-center">
+              <div className="col-span-7">
+                <AccordionTrigger>
+                  {`item-${index}`}
+                </AccordionTrigger>
+              </div>
+              <div className="col-start-8 flex gap-2">
+                <Button onClick={(event) => addItem(index, event)}>
+                <Plus className="h-4 w-4" />
+                  Add
+                </Button>
+                <Button disabled={persons.length === 1} onClick={(event) => deleteItem(index, event)}>
+                <Trash2 className="h-4 w-4" />
+                  Delete
+                </Button>
               </div>
             </div>
             <AccordionContent>
