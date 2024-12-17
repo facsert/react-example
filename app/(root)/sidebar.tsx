@@ -82,6 +82,10 @@ const pageList: MenuGroup[] = [
         title: "PromptInput",
         url: "/promptInput",
       },
+      {
+        title: "Websocket",
+        url: "/websocket",
+      },
     ],
   },
 {
