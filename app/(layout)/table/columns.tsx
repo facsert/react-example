@@ -28,30 +28,39 @@ import {
   FormMessage,
 }
 from "@/components/ui/form"
+import { PencilLine } from 'lucide-react';
 
-export type Node = {
-  id: number;
-  number: string;
-
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-
-  msg: string;
+class Node {
+  constructor(
+    public id: number,
+    public number: string,
+  
+    public host: string,
+    public port: number,
+    public username: string,
+    public password: string,
+  
+    public msg: string,
+  ) {}
 }
 
+
 // 定义列的标题和内容的样式
-export const columns: ColumnDef<Node>[] = [
+const selectCols: ColumnDef<Node>[] = [
+  {
+    accessorKey: "id",
+    header: () => <div className="w-0">ID</div>,
+    cell: ({ row }) => <div className="w-0">{row.getValue("id")}</div>,
+  },
   {
     accessorKey: "number",
-    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("number")}</div>,
+    cell: ({ row }) => <div className="w-0 text-left font-medium">{row.getValue("number")}</div>,
     header: ({column}) => {
       return (
-        <div>
+        <div className="w-0 px-0 mx-0">
           <Button
             variant="ghost"
-            className="cursor-pointer w-full flex flex-row justify-start items-center p-2"
+            className="cursor-pointer flex flex-row justify-start items-center p-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >   
             <p>Number</p>
@@ -63,13 +72,13 @@ export const columns: ColumnDef<Node>[] = [
   },
   {
     accessorKey: "host",
-    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("host")}</div>,
+    cell: ({ row }) => <div className="w-0 text-left font-medium">{row.getValue("host")}</div>,
     header: ({column}) => {
       return (
-        <div>
+        <div className="w-0">
           <Button
             variant="ghost"
-            className="cursor-pointer w-full flex flex-row justify-start items-center p-2"
+            className="cursor-pointer flex flex-row justify-start items-center p-2"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >   
             <p>Host</p>
@@ -81,13 +90,13 @@ export const columns: ColumnDef<Node>[] = [
   },
   {
     accessorKey: "port",
-    header: () => <div className="text-left">Port</div>,
-    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("port")}</div>,
+    header: () => <div className="w-0 text-left">Port</div>,
+    cell: ({ row }) => <div className="w-0 text-left font-medium">{row.getValue("port")}</div>,
   },
   {
     accessorKey: "msg",
-    header: () => <div className="text-left">Msg</div>,
-    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("msg")}</div>,
+    header: () => <div className="w-0 text-left">Msg</div>,
+    cell: ({ row }) => <div className="text-left">{row.getValue("msg")}</div>,
   },
   {
     id: "actions",
@@ -97,7 +106,7 @@ export const columns: ColumnDef<Node>[] = [
       return (
         <div className="flex flex-row gap-4 ">
           <Edit node={node} />
-          <Button variant="outline">Delete</Button>
+          {/* <Button  size="icon" variant="outline">Delete</Button> */}
         </div>
       )
     }
@@ -127,10 +136,10 @@ function Edit({ node }: {node: Node}) {
   }
     return (
       <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline"> Edit </Button>
+        <DialogTrigger>
+          <PencilLine className="w-6 h-6 text-primary" />
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="w-[60vw]">
           <DialogHeader>
             <DialogTitle>{node.number}</DialogTitle>
             <DialogDescription>modify node info</DialogDescription>
@@ -191,3 +200,6 @@ function Edit({ node }: {node: Node}) {
       </Dialog>
     )
 }
+
+
+export { Node, selectCols };

@@ -63,8 +63,8 @@ export class Node {
 
     this.host = "";
     this.port = 0;
-    this.username = "root";
-    this.password = "EcsAdmin?";
+    this.username = "username";
+    this.password = "password?";
   
     this.ua4_port = 0;
     this.ua5_port = 0;
