@@ -1,5 +1,6 @@
 import DynamicTable from "./table";
-import { Node, selectCols } from './columns'
+import { selectCols } from './columns'
+import { Node } from "./model";
 import DataTable from "./data_table";
 
 const data = [
