@@ -24,15 +24,15 @@ import DataForm from './data_form'
 const selectCols: ColumnDef<Node>[] = [
   {
     accessorKey: "id",
-    header: () => <div className="w-0">ID</div>,
-    cell: ({ row }) => <div className="w-0">{row.getValue("id")}</div>,
+    header: () => <div className="">ID</div>,
+    cell: ({ row }) => <div className="">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "number",
     cell: ({ row }) => <div className="w-5 text-left font-medium">{row.getValue("number")}</div>,
     header: ({column}) => {
       return (
-        <div className="w-0 px-0 mx-0">
+        <div className="px-0 mx-0">
           <Button
             variant="ghost"
             className="cursor-pointer flex flex-row justify-start items-center p-2"
@@ -50,7 +50,7 @@ const selectCols: ColumnDef<Node>[] = [
     cell: ({ row }) => <div className="w-5 text-left font-medium">{row.getValue("host")}</div>,
     header: ({column}) => {
       return (
-        <div className="w-0">
+        <div className="">
           <Button
             variant="ghost"
             className="cursor-pointer flex flex-row justify-start items-center p-2"
@@ -65,12 +65,12 @@ const selectCols: ColumnDef<Node>[] = [
   },
   {
     accessorKey: "port",
-    header: () => <div className="w-0 text-left">Port</div>,
-    cell: ({ row }) => <div className="w-0 text-left font-medium">{row.getValue("port")}</div>,
+    header: () => <div className="text-left">Port</div>,
+    cell: ({ row }) => <div className="text-left font-medium">{row.getValue("port")}</div>,
   },
   {
     accessorKey: "msg",
-    header: () => <div className="w-0 text-left">Msg</div>,
+    header: () => <div className="text-left">Msg</div>,
     cell: ({ row }) => <div className="text-left">{row.getValue("msg")}</div>,
   },
   {

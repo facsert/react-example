@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -40,6 +40,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -69,7 +76,8 @@ export default function DataTable<TData, TValue>(
     data: TData[]
   }
 ) {
-
+  
+  const [initData, setInitData] = useState(data)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -103,11 +111,76 @@ export default function DataTable<TData, TValue>(
       rowSelection,
       pagination,
     },
+    meta: {
+      updateData: (rowIndex: number, columnId: string, value: unknown) => {
+        setInitData((old) =>
+          old.map((row, index) => {
+            if (index === rowIndex) {
+              return {
+                ...old[rowIndex],
+                [columnId]: value,
+              }
+            }
+            return row
+          }),
+        )
+      },
+    },
+    enableRowSelection: true,
   })
+
+  const uniNumber = useMemo(() => {
+    const key: keyof TData = "number" as keyof TData
+    const numbers = new Set(initData.map((item: any) => item[key]))
+    return Array.from(numbers).sort((a, b) => a[key] > b[key]? 1 : -1)
+  }, [initData])
+  
+  const uniHost = useMemo(() => {
+    const key: keyof TData = "host" as keyof TData
+    const hosts = new Set(initData.map((item: any) => item[key]))
+    return Array.from(hosts).sort((a, b) => a[key] > b[key]? 1 : -1)
+  }, [initData])
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-4">
+        
+        <Select
+          onValueChange={(value) => {
+            value === "all"
+              ? table.getColumn("number")?.setFilterValue(undefined)
+              : table.getColumn("number")?.setFilterValue(value)
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Number" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Number</SelectItem>
+            {uniNumber.map((item) => (
+              <SelectItem key={item} value={item}>{item}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          onValueChange={(value) => { 
+            value === "all"
+              ? table.getColumn("host")?.setFilterValue(undefined)
+              : table.getColumn("host")?.setFilterValue(value)
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Host" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Host</SelectItem>
+            {uniHost.map((item) => (
+              <SelectItem key={item} value={item}>{item}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -135,7 +208,7 @@ export default function DataTable<TData, TValue>(
         </Popover>
       </div>
 
-      <div className="rounded-md border w-[30vw]">
+      <div className="rounded-md border w-[50vw]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
