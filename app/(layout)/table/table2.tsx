@@ -73,7 +73,7 @@ export class Node {
 
     this.mountain = "";
     this.version = "V2";
-    this.msg = "V2-RTS 193.168.1.1";
+    this.msg = "host 192.168.1.1";
   }
 }
 

@@ -77,14 +77,12 @@ export default function DataTable<TData, TValue>(
   }
 ) {
   
-  const [initData, setInitData] = useState(data)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [currPage, setCurrPage] = useState(0)
 
-  
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 5, //default page size
@@ -111,35 +109,20 @@ export default function DataTable<TData, TValue>(
       rowSelection,
       pagination,
     },
-    meta: {
-      updateData: (rowIndex: number, columnId: string, value: unknown) => {
-        setInitData((old) =>
-          old.map((row, index) => {
-            if (index === rowIndex) {
-              return {
-                ...old[rowIndex],
-                [columnId]: value,
-              }
-            }
-            return row
-          }),
-        )
-      },
-    },
     enableRowSelection: true,
   })
 
   const uniNumber = useMemo(() => {
     const key: keyof TData = "number" as keyof TData
-    const numbers = new Set(initData.map((item: any) => item[key]))
+    const numbers = new Set(data.map((item: any) => item[key]))
     return Array.from(numbers).sort((a, b) => a[key] > b[key]? 1 : -1)
-  }, [initData])
+  }, [data])
   
   const uniHost = useMemo(() => {
     const key: keyof TData = "host" as keyof TData
-    const hosts = new Set(initData.map((item: any) => item[key]))
+    const hosts = new Set(data.map((item: any) => item[key]))
     return Array.from(hosts).sort((a, b) => a[key] > b[key]? 1 : -1)
-  }, [initData])
+  }, [data])
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -264,7 +247,6 @@ export default function DataTable<TData, TValue>(
         <span className="w-20">
           共 {table.getFilteredRowModel().rows.length} 条
         </span>
-
 
         <Pagination>
           <PaginationContent>

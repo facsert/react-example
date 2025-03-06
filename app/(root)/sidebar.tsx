@@ -13,6 +13,7 @@ import {
   Settings2,
   SquareTerminal,
   ChevronRight,
+  CircleUserRound,
   type LucideIcon,
   FileCode,
 } from "lucide-react"
@@ -103,6 +104,10 @@ const pageList: MenuGroup[] = [
     {
       title: "Form",
       url: "/forms",
+    },
+    {
+      title: "Login",
+      url: "/login",
     },
     {
       title: "Search",
