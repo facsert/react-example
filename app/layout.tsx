@@ -11,7 +11,7 @@ import Navbar from "@/app/(root)/navbar"
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="flex flex-col w-screen h-screen"> 
         <ThemeProvider
           attribute="class"
